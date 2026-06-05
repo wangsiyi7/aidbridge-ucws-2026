@@ -332,6 +332,85 @@ export const SURGE_SCENARIOS = [
   }
 ];
 
+export const PILOT_PARTNERS = [
+  {
+    id: "migrant-worker-ngo",
+    label: "Migrant-worker NGO",
+    audience: "Migrant-worker intake desk",
+    wedge: "Night and weekend triage for dorm, salary, passport, injury, and clinic-fear cases.",
+    champion: "Duty lead, casework coordinator, or volunteer ops manager",
+    firstWorkflow: "WhatsApp intake to redacted brief, resource route, evidence note, and human owner.",
+    dataStart: "Verified worker-care, legal-aid, clinic, shelter, and document-access CSV directory.",
+    successMetrics: [
+      "Critical cases receive a named owner within 20 minutes.",
+      "Sensitive identifiers are removed before partner sharing.",
+      "Resource pressure is visible before every case is sent to the same desk."
+    ],
+    guardrails: [
+      "Never replace emergency, legal, or medical judgment.",
+      "Keep employer-retaliation details consent-based and redacted.",
+      "Use Supabase RLS or team authentication before storing real case data."
+    ]
+  },
+  {
+    id: "school-care-team",
+    label: "School care team",
+    audience: "School counsellor or student-welfare desk",
+    wedge: "Exam-week privacy-safe triage for food, shelter, panic, self-harm, and safeguarding signals.",
+    champion: "Counselling lead, year head, or student-welfare coordinator",
+    firstWorkflow: "Walk-in or email note to safety check, redacted case summary, first-hour plan, and counsellor handoff.",
+    dataStart: "School care contacts, crisis listening line, pantry/safe-room options, and escalation owners.",
+    successMetrics: [
+      "Self-harm or safeguarding signals are escalated before low-risk academic follow-up.",
+      "Redacted summaries can be shared with the right adult without exposing unnecessary details.",
+      "Follow-up checkpoints are visible for the first hour and same-day close-the-loop."
+    ],
+    guardrails: [
+      "Human counsellor remains the decision owner.",
+      "Minor-related details stay minimum-necessary and consent-aware.",
+      "Use school-approved escalation rules and never hide immediate danger."
+    ]
+  },
+  {
+    id: "mutual-aid-group",
+    label: "Mutual-aid group",
+    audience: "Community volunteer or mutual-aid duty desk",
+    wedge: "Same-night routing for rent shock, groceries, baby formula, elder care, and safe shelter.",
+    champion: "Volunteer ops lead, pantry coordinator, or family-service connector",
+    firstWorkflow: "Hotline or chat request to essentials route, delivery owner, privacy-safe summary, and follow-up clock.",
+    dataStart: "Local pantry, delivery, shelter, family-service, and document-access resource directory.",
+    successMetrics: [
+      "Baby formula, food, and shelter blockers are split into named owners.",
+      "The team can see which route is overloaded before dispatching volunteers.",
+      "One-page field packs are copy-ready for chat, spreadsheet, or helpdesk notes."
+    ],
+    guardrails: [
+      "Do not over-collect exact addresses or identity documents in shared channels.",
+      "Escalate injury, child, elder, and unsafe-housing cases to trained humans.",
+      "Keep the CSV directory verified and reviewed by local coordinators."
+    ]
+  },
+  {
+    id: "csr-community-desk",
+    label: "CSR community desk",
+    audience: "Corporate volunteer or CSR impact desk",
+    wedge: "A governed intake layer for employee-volunteer community programs and partner NGO handoffs.",
+    champion: "CSR program manager, impact lead, or volunteer platform owner",
+    firstWorkflow: "Employee-submitted help request to safe triage, partner route, impact estimate, and auditable handoff.",
+    dataStart: "Approved NGO partner directory, CSR escalation rules, and privacy-safe reporting fields.",
+    successMetrics: [
+      "Impact reporting uses minutes saved, resource routes, and redaction signals instead of vanity activity counts.",
+      "Volunteers get safe first actions without making medical, legal, or eligibility decisions.",
+      "Partner NGOs receive structured briefs rather than messy chat transcripts."
+    ],
+    guardrails: [
+      "Avoid turning CSR volunteers into untrained caseworkers.",
+      "Send high-risk cases to approved partner owners.",
+      "Separate demo analytics from identifiable beneficiary records."
+    ]
+  }
+];
+
 const TRANSLATED_OPENERS = {
   English: "I am here with you. I will ask only what is needed and help you reach the safest next step.",
   Mandarin: "我在这里陪你。我们只确认必要信息，然后一起找到最安全的下一步。",
@@ -1158,6 +1237,112 @@ export function buildSurgeLab(
   };
 }
 
+function findPilotPartner(partnerId) {
+  return PILOT_PARTNERS.find((partner) => partner.id === partnerId) || PILOT_PARTNERS[0];
+}
+
+export function buildPartnerPilotPack(
+  partnerId = PILOT_PARTNERS[0].id,
+  pack = buildActionPack(SAMPLE_CASES[0]),
+  ops = buildOpsDesk(),
+  surge = buildSurgeLab()
+) {
+  const partner = findPilotPartner(partnerId);
+  const leadNeed = pack.needs[0]?.label || "frontline support";
+  const topResource = pack.resources[0]?.name || "trusted local route";
+  const launchScore = pack.launch?.score || 0;
+  const proofScore = Math.min(100, Math.round(
+    (pack.audit?.score || 0) * 0.28 +
+    launchScore * 0.26 +
+    Math.min(100, ops.metrics.minutesSaved / 2) * 0.18 +
+    Math.min(100, surge.metrics.minutesSavedDelta) * 0.12 +
+    Math.min(100, surge.metrics.topPressure) * 0.08 +
+    8
+  ));
+  const readinessBand = proofScore >= 92
+    ? "Pilot-ready"
+    : proofScore >= 80
+      ? "Partner review"
+      : "Needs local calibration";
+  const successMetrics = [
+    ...partner.successMetrics,
+    `${pack.audit.score}/100 case-quality audit on the active demo case.`,
+    `${ops.metrics.minutesSaved} estimated operator minutes saved across the Ops Desk queue.`,
+    `${surge.metrics.slaRisk} exposed in surge mode with ${surge.metrics.totalCases} total cases.`
+  ];
+  const rollout = [
+    `Day 0: ${partner.dataStart}`,
+    "Day 1: Run five historical or synthetic cases through AidBridge with a human reviewer.",
+    `Day 2-3: Map the first workflow: ${partner.firstWorkflow}`,
+    "Day 4-7: Use Ops Desk during one duty window and compare manual notes against AidBridge field packs.",
+    "Day 8-10: Turn on Supabase only with RLS, anon-safe insert/select policies, and no service-role key in the browser.",
+    "Day 11-14: Review redaction misses, resource-route gaps, owner response times, and partner feedback."
+  ];
+  const ask = `Ask ${partner.champion} for a 14-day Singapore pilot using non-production or consented cases, a verified CSV resource directory, and one named duty lead.`;
+  const brief = [
+    "AIDBRIDGE PARTNER PILOT PACK",
+    `Partner: ${partner.label}`,
+    `Audience: ${partner.audience}`,
+    `Readiness: ${readinessBand} (${proofScore}/100)`,
+    "",
+    "WEDGE",
+    partner.wedge,
+    "",
+    "CURRENT PROOF",
+    `Active case lead need: ${leadNeed}`,
+    `Top route: ${topResource}`,
+    `Case audit: ${pack.audit.score}/100 (${pack.audit.band})`,
+    `Singapore Launch Lens: ${launchScore}/100 (${pack.launch.band})`,
+    `Ops Desk: ${ops.metrics.openCases} open cases, ${ops.metrics.criticalCases} critical, ${ops.metrics.minutesSaved} minutes saved`,
+    `Surge Lab: ${surge.metrics.slaRisk}; ${surge.metrics.topPressureRoute} at ${surge.metrics.topPressure}/100 pressure`,
+    "",
+    "14-DAY ROLLOUT",
+    ...rollout.map((item, index) => `${index + 1}. ${item}`),
+    "",
+    "SUCCESS METRICS",
+    ...successMetrics.map((item) => `- ${item}`),
+    "",
+    "GUARDRAILS",
+    ...partner.guardrails.map((item) => `- ${item}`),
+    "",
+    "PILOT ASK",
+    ask
+  ].join("\n");
+
+  return {
+    generatedAt: new Date().toISOString(),
+    partner: {
+      id: partner.id,
+      label: partner.label,
+      audience: partner.audience,
+      champion: partner.champion,
+      wedge: partner.wedge
+    },
+    readiness: {
+      score: proofScore,
+      band: readinessBand,
+      launchScore
+    },
+    proof: {
+      leadNeed,
+      topResource,
+      auditScore: pack.audit.score,
+      auditBand: pack.audit.band,
+      opsOpenCases: ops.metrics.openCases,
+      opsCriticalCases: ops.metrics.criticalCases,
+      opsMinutesSaved: ops.metrics.minutesSaved,
+      surgeRisk: surge.metrics.slaRisk,
+      surgeTopPressureRoute: surge.metrics.topPressureRoute,
+      surgeTopPressure: surge.metrics.topPressure
+    },
+    rollout,
+    successMetrics,
+    guardrails: partner.guardrails,
+    ask,
+    brief
+  };
+}
+
 export function buildFlowMap(pack) {
   const leadNeed = pack.needs[0]?.label || "Clarify";
   const topResource = pack.resources[0]?.name || "Manual review";
@@ -1435,7 +1620,7 @@ export function buildIdeaConstellation(input = {}, pack) {
       module: "./api/codex-bridge.mjs",
       eventInput: "aidbridge:codex-idea",
       eventOutput: "aidbridge:hub-built",
-      methods: ["buildIdeaConstellation", "buildFromIdea", "buildSurgeLab", "getCurrentHub", "setIdeaText", "importCodexContext"]
+      methods: ["buildIdeaConstellation", "buildFromIdea", "buildSurgeLab", "buildPartnerPilotPack", "getCurrentHub", "setIdeaText", "importCodexContext"]
     }
   };
 }
@@ -1490,9 +1675,11 @@ export function formatEvaluationJson(pack) {
 
 let activeResourceDirectory = DEFAULT_RESOURCE_DIRECTORY;
 let flowTourTimer;
+let currentPack;
 let currentHub;
 let currentOpsDesk;
 let currentSurgeLab;
+let currentPilotPack;
 let hubCanvasFrame;
 let hubCanvasPhase = 0;
 let selectedHubNodeId = "core";
@@ -1690,6 +1877,8 @@ function renderPack(pack) {
     return li;
   }));
 
+  refreshPilotPack(pack);
+
   byId("flowNodes").replaceChildren(...pack.flow.nodes.map((node, index) => {
     const div = document.createElement("button");
     div.type = "button";
@@ -1826,6 +2015,45 @@ function renderSurgeLab(lab) {
     div.append(strong, span);
     return div;
   }));
+}
+
+function renderPilotOptions() {
+  byId("pilotPartnerInput").replaceChildren(...PILOT_PARTNERS.map((partner) => {
+    const option = document.createElement("option");
+    option.value = partner.id;
+    option.textContent = partner.label;
+    return option;
+  }));
+}
+
+function renderPilotPack(pilot) {
+  currentPilotPack = pilot;
+  byId("pilotScore").textContent = String(pilot.readiness.score);
+  byId("pilotBand").textContent = pilot.readiness.band;
+  byId("pilotWedge").textContent = pilot.partner.wedge;
+  byId("pilotChampion").textContent = pilot.partner.champion;
+  byId("pilotProof").textContent = `${pilot.proof.auditScore}/100 audit; ${pilot.proof.opsMinutesSaved} min saved; ${pilot.proof.surgeRisk}`;
+  byId("pilotBrief").textContent = pilot.brief;
+
+  byId("pilotRollout").replaceChildren(...pilot.rollout.map((step) => {
+    const li = document.createElement("li");
+    li.textContent = step;
+    return li;
+  }));
+
+  byId("pilotMetrics").replaceChildren(...pilot.successMetrics.slice(0, 6).map((metric) => {
+    const li = document.createElement("li");
+    li.textContent = metric;
+    return li;
+  }));
+}
+
+function refreshPilotPack(pack = currentPack) {
+  if (!pack) return;
+  const ops = currentOpsDesk || buildOpsDesk(OPS_DESK_CASES, activeResourceDirectory);
+  const surge = currentSurgeLab || buildSurgeLab(SURGE_SCENARIOS[0].id, OPS_DESK_CASES, activeResourceDirectory);
+  const pilot = buildPartnerPilotPack(byId("pilotPartnerInput").value, pack, ops, surge);
+  renderPilotPack(pilot);
 }
 
 function renderBackendStatus(message = "") {
@@ -2135,7 +2363,6 @@ function loadSample(index) {
 
 if (typeof document !== "undefined") {
   let sampleIndex = 0;
-  let currentPack;
 
   function showView(view) {
     const validView = ["workspace", "ops", "hub", "directory", "field", "review"].includes(view) ? view : "workspace";
@@ -2182,18 +2409,31 @@ if (typeof document !== "undefined") {
   byId("runSurgeBtn").addEventListener("click", () => {
     const lab = buildSurgeLab(byId("surgeScenarioInput").value, OPS_DESK_CASES, activeResourceDirectory);
     renderSurgeLab(lab);
+    refreshPilotPack();
     showToast("Surge lab updated");
   });
 
   byId("surgeScenarioInput").addEventListener("change", () => {
     const lab = buildSurgeLab(byId("surgeScenarioInput").value, OPS_DESK_CASES, activeResourceDirectory);
     renderSurgeLab(lab);
+    refreshPilotPack();
   });
 
   byId("copySurgeBriefBtn").addEventListener("click", async () => {
     currentSurgeLab = currentSurgeLab || buildSurgeLab(byId("surgeScenarioInput").value, OPS_DESK_CASES, activeResourceDirectory);
     await navigator.clipboard.writeText(currentSurgeLab.brief);
     showToast("Surge brief copied");
+  });
+
+  byId("pilotPartnerInput").addEventListener("change", () => {
+    refreshPilotPack();
+    showToast("Pilot pack updated");
+  });
+
+  byId("copyPilotPackBtn").addEventListener("click", async () => {
+    refreshPilotPack();
+    await navigator.clipboard.writeText(currentPilotPack.brief);
+    showToast("Pilot pack copied");
   });
 
   byId("saveBackendBtn").addEventListener("click", () => {
@@ -2325,6 +2565,7 @@ if (typeof document !== "undefined") {
       renderPack(currentPack);
       renderOpsDesk(buildOpsDesk(OPS_DESK_CASES, activeResourceDirectory));
       renderSurgeLab(buildSurgeLab(byId("surgeScenarioInput").value, OPS_DESK_CASES, activeResourceDirectory));
+      refreshPilotPack(currentPack);
       showToast("Directory applied");
     } catch (error) {
       byId("directoryStatus").textContent = error.message || "Invalid CSV";
@@ -2339,14 +2580,18 @@ if (typeof document !== "undefined") {
     renderPack(currentPack);
     renderOpsDesk(buildOpsDesk(OPS_DESK_CASES, activeResourceDirectory));
     renderSurgeLab(buildSurgeLab(byId("surgeScenarioInput").value, OPS_DESK_CASES, activeResourceDirectory));
+    refreshPilotPack(currentPack);
     showToast("Directory reset");
   });
 
   renderDirectory(activeResourceDirectory, true);
-  currentPack = loadSample(0);
-  renderOpsDesk(buildOpsDesk(OPS_DESK_CASES, activeResourceDirectory));
+  renderPilotOptions();
   renderSurgeOptions();
+  currentOpsDesk = buildOpsDesk(OPS_DESK_CASES, activeResourceDirectory);
+  renderOpsDesk(currentOpsDesk);
   renderSurgeLab(buildSurgeLab(byId("surgeScenarioInput").value, OPS_DESK_CASES, activeResourceDirectory));
+  currentPack = loadSample(0);
+  refreshPilotPack(currentPack);
   renderBackendStatus();
   byId("hubIdeaInput").value = hubSeedFromPack(currentPack);
   renderHub(buildIdeaConstellation({ ideaText: byId("hubIdeaInput").value }, currentPack));
@@ -2370,12 +2615,14 @@ if (typeof document !== "undefined") {
     buildIdeaConstellation,
     buildOpsDesk,
     buildSurgeLab,
+    buildPartnerPilotPack,
     syncActionPackToSupabase,
     syncOpsDeskToSupabase,
     getStoredSupabaseConfig,
     getCurrentHub: () => currentHub,
     getCurrentOpsDesk: () => currentOpsDesk,
     getCurrentSurgeLab: () => currentSurgeLab,
+    getCurrentPilotPack: () => currentPilotPack,
     setIdeaText: (ideaText) => {
       byId("hubIdeaInput").value = String(ideaText || "");
       return byId("hubIdeaInput").value;

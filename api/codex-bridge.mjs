@@ -2,6 +2,7 @@ import {
   buildActionPack,
   buildIdeaConstellation,
   buildOpsDesk,
+  buildPartnerPilotPack,
   buildSurgeLab,
   directoryToCsv,
   parseResourceCsv
@@ -26,6 +27,7 @@ export {
   buildActionPack,
   buildIdeaConstellation,
   buildOpsDesk,
+  buildPartnerPilotPack,
   buildSurgeLab,
   directoryToCsv,
   parseResourceCsv
@@ -45,6 +47,7 @@ export const CODEX_BRIDGE_SCHEMA = {
     "buildIdeaConstellation",
     "buildOpsDesk",
     "buildSurgeLab",
+    "buildPartnerPilotPack",
     "syncActionPackToSupabase",
     "syncOpsDeskToSupabase",
     "fetchRecentSupabaseRecords",

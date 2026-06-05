@@ -32,7 +32,7 @@ https://github.com/wangsiyi7/aidbridge-ucws-2026
 
 ## 6. Short Description / 项目短描述
 
-AidBridge 是一个面向志愿者、学校辅导员、NGO 和互助组织的社区救援分诊系统。它可以把 WhatsApp、热线、走访记录等混乱求助信息，在浏览器中快速转化为风险评分、需求识别、隐私脱敏摘要、可信资源匹配、证据台账、后续跟进时钟和人工交接脚本。新增的 Ops Desk 可以把多个并发 case 组成值班队列，自动排序优先级、观察资源压力、汇总节省时间，并生成 duty lead 可复制的运营 brief。Singapore Surge Lab 可以压测 migrant-worker、school-care、family-aid 和 document-access 等新加坡高压场景，让评委看到“今晚更糟时”系统如何排序、暴露瓶颈并输出第一步行动。Ops Desk 还加入可选 Supabase Backend Sync，允许团队用 Supabase project URL 和 anon key 将 action pack 与运营快照同步到云端。
+AidBridge 是一个面向志愿者、学校辅导员、NGO 和互助组织的社区救援分诊系统。它可以把 WhatsApp、热线、走访记录等混乱求助信息，在浏览器中快速转化为风险评分、需求识别、隐私脱敏摘要、可信资源匹配、证据台账、后续跟进时钟和人工交接脚本。新增的 Ops Desk 可以把多个并发 case 组成值班队列，自动排序优先级、观察资源压力、汇总节省时间，并生成 duty lead 可复制的运营 brief。Singapore Surge Lab 可以压测 migrant-worker、school-care、family-aid 和 document-access 等新加坡高压场景，让评委看到“今晚更糟时”系统如何排序、暴露瓶颈并输出第一步行动。Partner Pilot Pack 可以把当前 case、Ops Desk 和 Surge Lab 证据直接转成 14 天新加坡试点方案，面向 migrant-worker NGO、school care team、mutual-aid group 和 CSR community desk。Ops Desk 还加入可选 Supabase Backend Sync，允许团队用 Supabase project URL 和 anon key 将 action pack 与运营快照同步到云端。
 
 新增的 Hackathon Constellation Hub 可以把任何黑客松想法输入自动构建为星空节点图，并生成 Project Wall 提交引导与 Codex API 输出，让项目从“单一 Demo”升级为“想法到提交的可视化操作系统”。
 
@@ -46,6 +46,7 @@ AidBridge 解决的是社区救援中的真实高压问题：一线帮助者经�
 - 紧急程度和置信度评分
 - Ops Desk 多 case 队列和资源压力视图
 - Singapore Surge Lab 突发压力模拟
+- Partner Pilot Pack 14 天新加坡试点方案
 - Supabase Backend Sync 后端同步
 - 自动识别的需求类别
 - 未来 60 分钟行动计划
@@ -107,6 +108,7 @@ AidBridge 将混乱输入转化为结构化救援行动包，并用可视化和�
 - Deterministic risk scoring：可复现的紧急程度与置信度评分
 - Ops Desk：批量分诊多个 case，排序优先级，显示资源压力和 duty-lead brief
 - Singapore Surge Lab：压测 migrant-worker、school-care、family-aid 和 document-access 等新加坡突发场景
+- Partner Pilot Pack：为 NGO、学校关怀团队、互助组织和 CSR 社区项目生成 14 天试点计划
 - Supabase Backend Sync：将 action pack 和 Ops Desk snapshot 持久化到 Supabase
 - Need detection：识别医疗、庇护、食物、法律/劳工权益、心理健康、儿童/老人保护、证件与访问权限等需求
 - Crisis Map：将 case 路径可视化为可点击流程节点
@@ -134,6 +136,7 @@ AidBridge 将混乱输入转化为结构化救援行动包，并用可视化和�
 - Deterministic triage and risk-scoring engine
 - Ops Desk multi-case queue and resource-pressure model
 - Singapore Surge Lab stress simulator
+- Partner Pilot Pack generator
 - Supabase REST sync client
 - Keyword and rule-based need detection
 - Privacy redaction layer

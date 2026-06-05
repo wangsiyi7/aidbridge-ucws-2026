@@ -14,6 +14,7 @@
 - Privacy redaction, resource matching, and follow-up clock built into the demo
 - Ops Desk multi-case queue, resource pressure model, and copy-ready command brief built into the demo
 - Singapore Surge Lab stress simulator and copy-ready surge brief built into Ops Desk
+- Partner Pilot Pack generator built into Judge Lens for 14-day Singapore pilot planning
 - Optional Supabase Backend Sync built into Ops Desk
 - Supabase schema and demo RLS policies: `supabase/schema.sql`
 - Interactive Crisis Map workflow visualization built into the demo
@@ -34,6 +35,7 @@
 - Ops Desk screenshot: `assets/screenshot-ops.png`
 - Surge Lab screenshot: `assets/screenshot-surge.png`
 - Supabase backend screenshot: `assets/screenshot-backend.png`
+- Partner Pilot Pack screenshot: `assets/screenshot-pilot.png`
 - Ethics and safety note: `ETHICS_AND_SAFETY.md`
 - Community vote copy: `COMMUNITY_VOTE_KIT.md`
 - Social card: `assets/social-card.svg`
@@ -84,7 +86,7 @@ Avoid overclaiming:
 6. Click Hub and show the Hackathon Constellation star map generated from the AidBridge idea seed.
 7. Paste a new UCWS idea sentence, click Build Stars, then click a node and show the guided Project Wall fields plus Codex bridge JSON.
 8. Click Directory, apply a custom CSV, and show matching changes.
-9. Click Judge Lens and show the 100/100 case-quality audit, Singapore Launch Lens, Impact Lens, and JSON export.
+9. Click Judge Lens and show the 100/100 case-quality audit, Singapore Launch Lens, Partner Pilot Pack, Impact Lens, and JSON export.
 10. Click Field Pack.
 11. Copy the pack and explain how it fits WhatsApp, NGO CRM, or helpdesk notes.
 

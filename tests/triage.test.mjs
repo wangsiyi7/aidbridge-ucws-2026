@@ -5,6 +5,7 @@ import {
   buildFlowMap,
   buildIdeaConstellation,
   buildOpsDesk,
+  buildPartnerPilotPack,
   buildSingaporeLaunchPlan,
   buildSurgeLab,
   detectNeeds,
@@ -130,6 +131,13 @@ assert.ok(surge.metrics.criticalCases >= ops.metrics.criticalCases, "surge lab p
 assert.ok(surge.firstMoves.length >= 4, "surge lab produces first moves");
 assert.ok(surge.brief.includes("AIDBRIDGE SURGE LAB"), "exports copy-ready surge brief");
 assert.ok(surge.scenario.judgeAngle.includes("Singapore"), "frames surge with Singapore judge angle");
+
+const pilot = buildPartnerPilotPack("migrant-worker-ngo", pack, ops, surge);
+assert.ok(pilot.readiness.score >= 85, "builds a high-confidence partner pilot pack");
+assert.ok(pilot.rollout.length >= 6, "adds a 14-day rollout");
+assert.ok(pilot.successMetrics.some((item) => item.includes("case-quality audit")), "uses live proof in pilot metrics");
+assert.ok(pilot.guardrails.some((item) => item.includes("emergency")), "keeps human-safety guardrails");
+assert.ok(pilot.brief.includes("AIDBRIDGE PARTNER PILOT PACK"), "exports copy-ready partner pilot brief");
 
 const normalizedSupabase = normalizeSupabaseConfig({
   url: "https://example.supabase.co/",

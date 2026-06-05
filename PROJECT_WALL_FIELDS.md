@@ -16,7 +16,7 @@ Recommended additional selection if the platform allows it: DeepResearch.
 
 ## Description
 
-AidBridge helps frontline volunteers, school counsellors, NGOs, and mutual-aid teams respond to urgent requests for help. A user can paste a messy WhatsApp, hotline, or walk-in message, choose the operating context, and generate a structured field pack in seconds. Teams can also open Ops Desk to see a multi-case duty queue, urgency ordering, resource pressure, aggregate minutes saved, and a copy-ready command brief. The Singapore Surge Lab stress-tests migrant-worker, school-care, family-aid, and document-access spikes so teams can see what breaks first and copy a first-move surge brief. Ops Desk now includes optional Supabase Backend Sync so action packs and operations snapshots can be persisted from the public browser demo with a Supabase project URL and anon key.
+AidBridge helps frontline volunteers, school counsellors, NGOs, and mutual-aid teams respond to urgent requests for help. A user can paste a messy WhatsApp, hotline, or walk-in message, choose the operating context, and generate a structured field pack in seconds. Teams can also open Ops Desk to see a multi-case duty queue, urgency ordering, resource pressure, aggregate minutes saved, and a copy-ready command brief. The Singapore Surge Lab stress-tests migrant-worker, school-care, family-aid, and document-access spikes so teams can see what breaks first and copy a first-move surge brief. The Partner Pilot Pack turns the live case, Ops Desk, and Surge Lab evidence into a 14-day Singapore pilot plan for migrant-worker NGOs, school care teams, mutual-aid groups, or CSR community desks. Ops Desk now includes optional Supabase Backend Sync so action packs and operations snapshots can be persisted from the public browser demo with a Supabase project URL and anon key.
 
 The pack includes a first response, risk and confidence score, detected needs, a next-60-minute action plan, a privacy-safe redacted brief, trusted resource matches, resource-routing guidance, an evidence ledger, a follow-up clock, and a human handoff script. The live Crisis Map visualizes every case from intake signal to need radar, resource route, evidence lock, and human handoff, making the workflow understandable at a glance. Its Play Flow tour can auto-walk judges through the path during a short demo. Teams can also paste a local CSV resource directory and immediately rerun matching against their own verified services. The Judge Lens view runs a live case-quality audit across safety, privacy, evidence, resource fit, handoff clarity, and field readiness, then exports machine-readable JSON for review. The Impact Lens estimates the operational outcome: manual baseline minutes, AidBridge run minutes, time saved, privacy signals, and resource routes. The Singapore Launch Lens scores go-to-market readiness across multilingual coverage, frontline channels, resource-directory portability, privacy-safe export, human handoff, proof package, and urgent-route readiness. The repo also includes a four-scenario benchmark report with 4/4 passing cases, average audit score 100, average operator minutes saved 47, and 100% redaction pass rate. The current demo runs entirely in the browser with a deterministic triage engine so the product is testable without accounts, API keys, or a backend. The architecture is designed to upgrade cleanly into LLM extraction, retrieval over verified local service directories, privacy review, and human-in-the-loop ownership.
 
@@ -40,6 +40,7 @@ https://github.com/wangsiyi7/aidbridge-ucws-2026
 - Deterministic triage/risk-scoring engine
 - Ops Desk multi-case queue and resource-pressure model
 - Singapore Surge Lab stress simulator
+- Partner Pilot Pack generator
 - Optional Supabase backend sync with SQL schema and RLS policies
 - Dynamic Crisis Map visualization
 - Hackathon Constellation Hub canvas visualization
@@ -89,6 +90,12 @@ Supabase backend screenshot:
 assets/screenshot-backend.png
 ```
 
+Partner pilot screenshot:
+
+```text
+assets/screenshot-pilot.png
+```
+
 Final-stage visual Hub screenshot:
 
 ```text
@@ -109,7 +116,7 @@ To be filled with the real team member names and profiles.
 6. Run Singapore Surge Lab and show the pressure scenario plus copy-ready surge brief.
 7. Open Hub and show the star-map Project Wall guidance plus Codex bridge JSON.
 8. Open Directory, paste a two-row CSV, and show the matched resources change.
-9. Open Judge Lens and show the live case-quality score, Impact Lens, Singapore Launch Lens, and machine-readable JSON.
+9. Open Judge Lens and show the live case-quality score, Impact Lens, Singapore Launch Lens, Partner Pilot Pack, and machine-readable JSON.
 10. Open Field Pack and copy the one-page operator brief.
 11. Explain why deterministic output is safer for frontline workflows and how LLM/RAG can extend the same schema with verified resource directories.
 

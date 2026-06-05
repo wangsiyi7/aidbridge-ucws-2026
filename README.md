@@ -51,6 +51,7 @@ AidBridge creates a structured aid plan in seconds:
 - Runs a live case-quality audit for safety, privacy, evidence, resource fit, handoff clarity, and field readiness.
 - Estimates operational impact: manual baseline minutes, AidBridge run minutes, time saved, privacy signals, and resource routes.
 - Adds a Singapore Launch Lens that scores go-to-market readiness across multilingual coverage, frontline channels, local resource-directory portability, privacy-safe export, human handoff, proof package, and urgent-route readiness.
+- Adds a Partner Pilot Pack that turns the live case, Ops Desk, and Surge Lab evidence into a 14-day Singapore pilot plan for migrant-worker NGOs, school care teams, mutual-aid groups, or CSR community desks.
 - Exports machine-readable evaluation JSON so judges or automated reviewers can inspect the product output.
 - Releases a static Codex bridge API through `window.AidBridgeCodex`, browser events, and `api/codex-bridge.mjs` so Codex or other scripts can inject ideas and read the generated constellation payload.
 - Exports a one-page field pack that can be pasted into an NGO case note, volunteer chat, or helpdesk record.
@@ -114,7 +115,7 @@ If your environment blocks the default `node` command, use the bundled Codex run
 npm test
 ```
 
-The test suite verifies need detection, risk scoring, privacy redaction, resource matching, CSV import/export, evidence output, Ops Desk queue generation, Singapore Surge Lab stress scenarios, Crisis Map generation, Singapore Launch Lens readiness scoring, case-quality audit scoring, evaluation JSON, and field-pack formatting.
+The test suite verifies need detection, risk scoring, privacy redaction, resource matching, CSV import/export, evidence output, Ops Desk queue generation, Singapore Surge Lab stress scenarios, Partner Pilot Pack generation, Crisis Map generation, Singapore Launch Lens readiness scoring, case-quality audit scoring, evaluation JSON, and field-pack formatting.
 
 Run the scenario benchmark:
 
@@ -173,6 +174,7 @@ aidbridge/
   assets/screenshot-ops.png
   assets/screenshot-surge.png
   assets/screenshot-backend.png
+  assets/screenshot-pilot.png
   assets/screenshot-hub.png
   assets/screenshot-hub-mobile.png
   assets/evaluation-report.json
@@ -250,6 +252,7 @@ AidBridge 采用 Singapore-first, SEA-ready 的定位：先服务新加坡社区
 - Case-quality audit engine
 - Impact/outcome estimation layer
 - Singapore Launch Lens
+- Partner Pilot Pack generator
 - Hackathon Constellation Hub
 - Ops Desk multi-case queue and resource-pressure view
 - Singapore Surge Lab stress simulator

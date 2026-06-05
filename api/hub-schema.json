@@ -25,6 +25,15 @@
       },
       "output": "Singapore surge-stress payload with base vs surge metrics, SLA risk, first moves, pressure preview, and copy-ready surge brief."
     },
+    "buildPartnerPilotPack": {
+      "input": {
+        "partnerId": "migrant-worker-ngo | school-care-team | mutual-aid-group | csr-community-desk",
+        "pack": "optional AidBridge action pack",
+        "ops": "optional Ops Desk payload",
+        "surge": "optional Surge Lab payload"
+      },
+      "output": "Partner pilot payload with Singapore wedge, readiness score, 14-day rollout, success metrics, guardrails, pilot ask, and copy-ready outreach brief."
+    },
     "syncActionPackToSupabase": {
       "input": {
         "pack": "AidBridge action pack",
