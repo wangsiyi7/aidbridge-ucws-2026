@@ -16,7 +16,7 @@ Recommended additional selection if the platform allows it: DeepResearch.
 
 ## Description
 
-AidBridge helps frontline volunteers, school counsellors, NGOs, and mutual-aid teams respond to urgent requests for help. A user can paste a messy WhatsApp, hotline, or walk-in message, choose the operating context, and generate a structured field pack in seconds.
+AidBridge helps frontline volunteers, school counsellors, NGOs, and mutual-aid teams respond to urgent requests for help. A user can paste a messy WhatsApp, hotline, or walk-in message, choose the operating context, and generate a structured field pack in seconds. Teams can also open Ops Desk to see a multi-case duty queue, urgency ordering, resource pressure, aggregate minutes saved, and a copy-ready command brief.
 
 The pack includes a first response, risk and confidence score, detected needs, a next-60-minute action plan, a privacy-safe redacted brief, trusted resource matches, resource-routing guidance, an evidence ledger, a follow-up clock, and a human handoff script. The live Crisis Map visualizes every case from intake signal to need radar, resource route, evidence lock, and human handoff, making the workflow understandable at a glance. Its Play Flow tour can auto-walk judges through the path during a short demo. Teams can also paste a local CSV resource directory and immediately rerun matching against their own verified services. The Judge Lens view runs a live case-quality audit across safety, privacy, evidence, resource fit, handoff clarity, and field readiness, then exports machine-readable JSON for review. The Impact Lens estimates the operational outcome: manual baseline minutes, AidBridge run minutes, time saved, privacy signals, and resource routes. The Singapore Launch Lens scores go-to-market readiness across multilingual coverage, frontline channels, resource-directory portability, privacy-safe export, human handoff, proof package, and urgent-route readiness. The repo also includes a four-scenario benchmark report with 4/4 passing cases, average audit score 100, average operator minutes saved 47, and 100% redaction pass rate. The current demo runs entirely in the browser with a deterministic triage engine so the product is testable without accounts, API keys, or a backend. The architecture is designed to upgrade cleanly into LLM extraction, retrieval over verified local service directories, privacy review, and human-in-the-loop ownership.
 
@@ -38,6 +38,7 @@ https://github.com/wangsiyi7/aidbridge-ucws-2026
 - CSS
 - JavaScript ES modules
 - Deterministic triage/risk-scoring engine
+- Ops Desk multi-case queue and resource-pressure model
 - Dynamic Crisis Map visualization
 - Hackathon Constellation Hub canvas visualization
 - Guided Project Wall field builder
@@ -64,6 +65,12 @@ Optional stronger judge-focused screenshot:
 
 ```text
 assets/screenshot-judge.png
+```
+
+Team operations screenshot:
+
+```text
+assets/screenshot-ops.png
 ```
 
 Final-stage visual Hub screenshot:

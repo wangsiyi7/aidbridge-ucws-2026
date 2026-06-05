@@ -6,6 +6,7 @@
   <a href="./UCWS_SUBMISSION_EN.md"><kbd>UCWS Submission EN</kbd></a>
   <a href="./UCWS_SUBMISSION_CN.md"><kbd>UCWS 提交 CN</kbd></a>
   <a href="https://wangsiyi7.github.io/aidbridge-ucws-2026/?demo=1"><kbd>Live Demo</kbd></a>
+  <a href="https://wangsiyi7.github.io/aidbridge-ucws-2026/?view=ops"><kbd>Ops Desk</kbd></a>
   <a href="https://wangsiyi7.github.io/aidbridge-ucws-2026/?view=hub"><kbd>Visual Hub</kbd></a>
 </p>
 
@@ -16,6 +17,8 @@ AidBridge turns messy multilingual requests for help into verified, field-ready 
 Built for **UCWS Singapore Hackathon 2026** as an Application + DeepResearch-ready public-good project with a Singapore-first, Southeast Asia-ready expansion path.
 
 Live demo: https://wangsiyi7.github.io/aidbridge-ucws-2026/?demo=1
+
+Ops Desk: https://wangsiyi7.github.io/aidbridge-ucws-2026/?view=ops
 
 Visual Hub: https://wangsiyi7.github.io/aidbridge-ucws-2026/?view=hub
 
@@ -33,6 +36,7 @@ AidBridge creates a structured aid plan in seconds:
 
 - Detects urgent needs across medical, shelter, food, legal/work-rights, mental health, safeguarding, and document-access categories.
 - Scores risk and confidence with a deterministic triage engine.
+- Adds an Ops Desk that batch-triages multiple active cases, sorts the queue by urgency, watches resource pressure, rolls up minutes saved, and exports a duty-lead brief.
 - Visualizes every case as an interactive Crisis Map from intake signal to human handoff, with a Play Flow tour for demos.
 - Adds a Hackathon Constellation Hub inspired by code graph dashboards: paste any UCWS idea and it turns the concept into a visual star map of user signals, AI layers, data sources, safety guardrails, evaluation proof, and submission artifacts.
 - Guides Project Wall filling from the Hub by generating title, tagline, description, demo/repo proof, screenshot guidance, missing human fields, and next actions.
@@ -52,7 +56,7 @@ The demo works fully offline in the browser. The engine is deterministic by desi
 
 ## Why It Is Different
 
-Public UCWS-related repositories and visible project references cluster around finance agents, voice assistants, developer tools, and agent skills. AidBridge is a finished user-facing application for a public-good workflow that non-technical people can immediately understand and test.
+Public UCWS-related repositories and visible project references cluster around finance agents, voice assistants, developer tools, and agent skills. AidBridge is a finished user-facing application for a public-good workflow that non-technical people can immediately understand and test. The Ops Desk moves it beyond a single-case generator into a team-level operating surface, which is closer to how NGOs, school care teams, and mutual-aid desks actually work.
 
 ## Singapore Launch Strategy
 
@@ -61,6 +65,7 @@ AidBridge is positioned as a Singapore-first community-aid operating layer:
 - Start with NGOs, school care teams, mutual-aid desks, and migrant-worker support workflows.
 - Support Singapore operating languages through the demo resource directory: English, Mandarin, Malay, and Tamil, with additional migrant/region language signals such as Hindi, Bengali, and Mixed input.
 - Fit frontline intake channels such as WhatsApp, hotline, walk-in desk, and email.
+- Operate a multi-case duty queue instead of only generating one-off case responses.
 - Let local teams replace demo resources with their own CSV directory without changing code.
 - Keep high-risk decisions human-owned, with privacy-safe exports, evidence notes, and escalation reminders.
 - Reuse the same schema for Southeast Asia expansion by swapping language packs, verified local directories, escalation rules, and partner handoff owners.
@@ -87,7 +92,7 @@ If your environment blocks the default `node` command, use the bundled Codex run
 npm test
 ```
 
-The test suite verifies need detection, risk scoring, privacy redaction, resource matching, CSV import/export, evidence output, Crisis Map generation, Singapore Launch Lens readiness scoring, case-quality audit scoring, evaluation JSON, and field-pack formatting.
+The test suite verifies need detection, risk scoring, privacy redaction, resource matching, CSV import/export, evidence output, Ops Desk queue generation, Crisis Map generation, Singapore Launch Lens readiness scoring, case-quality audit scoring, evaluation JSON, and field-pack formatting.
 
 Run the scenario benchmark:
 
@@ -143,6 +148,7 @@ aidbridge/
   assets/screenshot.png      Desktop app screenshot
   assets/screenshot-mobile.png
   assets/screenshot-judge.png
+  assets/screenshot-ops.png
   assets/screenshot-hub.png
   assets/screenshot-hub-mobile.png
   assets/evaluation-report.json
@@ -218,6 +224,7 @@ AidBridge 采用 Singapore-first, SEA-ready 的定位：先服务新加坡社区
 - Impact/outcome estimation layer
 - Singapore Launch Lens
 - Hackathon Constellation Hub
+- Ops Desk multi-case queue and resource-pressure view
 - Browser CustomEvent integration
 - Static Codex bridge API
 - Node.js tests and benchmark harness
@@ -232,6 +239,7 @@ AidBridge 采用 Singapore-first, SEA-ready 的定位：先服务新加坡社区
 推荐截图：
 
 - `assets/screenshot-hub.png`
+- `assets/screenshot-ops.png`
 - `assets/screenshot-judge.png`
 - `assets/screenshot.png`
 

@@ -940,6 +940,149 @@ select {
   white-space: pre-wrap;
 }
 
+.ops-inner {
+  max-width: 1180px;
+}
+
+.ops-head,
+.ops-panel-head,
+.ops-case-top,
+.ops-load-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: start;
+}
+
+.ops-head h2,
+.ops-panel-head h3 {
+  margin: 4px 0 0;
+  letter-spacing: 0;
+}
+
+.ops-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.ops-metrics div {
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, #18202f, #21434a);
+  color: white;
+}
+
+.ops-metrics span {
+  display: block;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 12px;
+  font-weight: 760;
+}
+
+.ops-metrics strong {
+  display: block;
+  margin-top: 5px;
+  font-size: 30px;
+  line-height: 1;
+}
+
+.ops-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.18fr) minmax(300px, 0.82fr);
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.ops-panel {
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #ffffff;
+}
+
+.ops-queue,
+.ops-resource-load {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.ops-case {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--blue);
+  border-radius: var(--radius);
+  background: #fbfcf8;
+}
+
+.ops-case.is-next {
+  border-left-color: var(--coral);
+  background: linear-gradient(135deg, rgba(255, 226, 220, 0.54), #ffffff);
+}
+
+.ops-case strong,
+.ops-load-head strong {
+  font-size: 14px;
+}
+
+.ops-case-top span,
+.ops-load-head span {
+  color: var(--teal);
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.ops-case p,
+.ops-load-item p {
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.ops-load-item {
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #fbfcf8;
+}
+
+.ops-load-bar {
+  overflow: hidden;
+  height: 9px;
+  margin-top: 10px;
+  border-radius: 999px;
+  background: #e8eef3;
+}
+
+.ops-load-bar i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--teal), var(--coral));
+}
+
+.ops-brief {
+  overflow: auto;
+  min-height: 240px;
+  margin: 14px 0 0;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #101820;
+  color: #e9f4ef;
+  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+  font-size: 13px;
+  line-height: 1.45;
+  white-space: pre-wrap;
+}
+
 .directory-actions {
   display: flex;
   align-items: center;
@@ -1405,6 +1548,8 @@ select {
   .workspace,
   .output-grid,
   .control-grid,
+  .ops-metrics,
+  .ops-layout,
   .audit-list,
   .impact-grid,
   .flow-nodes,
@@ -1415,6 +1560,8 @@ select {
   }
 
   .hub-stage-head,
+  .ops-head,
+  .ops-panel-head,
   .hub-console-head {
     display: grid;
     grid-template-columns: 1fr;

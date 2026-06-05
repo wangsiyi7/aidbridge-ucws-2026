@@ -51,13 +51,21 @@ This is the important difference: AidBridge does not stop at a generated answer.
 
 ## 58-70 Seconds
 
+Open `Ops Desk`.
+
+Speaker line:
+
+This is the reverse-angle proof. AidBridge is not just a single-case generator; Ops Desk shows multiple active cases, urgency ordering, resource pressure, aggregate minutes saved, and the duty-lead brief. That is closer to how a real NGO, school care team, or mutual-aid desk would operate.
+
+## 70-78 Seconds
+
 Open `Hub`, click `Build Stars`, and show the Constellation Hub.
 
 Speaker line:
 
 This is the final-stage layer. Any hackathon idea can become a star map of problem signals, beneficiaries, AI layers, data sources, safety guardrails, evaluation proof, and submission artifacts. The right panel turns that map into Project Wall guidance, and the JSON is exposed through the Codex bridge API.
 
-## 70-80 Seconds
+## 78-84 Seconds
 
 Open `Directory`, paste a short CSV with two local resources, and click `Apply CSV`.
 
@@ -65,7 +73,7 @@ Speaker line:
 
 The resource directory is not hardcoded. A community team can paste its own verified services and rerun matching immediately.
 
-## 80-88 Seconds
+## 84-88 Seconds
 
 Open `Judge Lens`.
 

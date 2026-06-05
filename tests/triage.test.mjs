@@ -4,6 +4,7 @@ import {
   buildActionPack,
   buildFlowMap,
   buildIdeaConstellation,
+  buildOpsDesk,
   buildSingaporeLaunchPlan,
   detectNeeds,
   directoryToCsv,
@@ -107,5 +108,13 @@ assert.ok(hub.nodes.some((node) => node.type === "artifact" && node.label.includ
 assert.ok(hub.guidance.guidedSteps.some((step) => step.label === "Description"), "adds guided submission description");
 assert.equal(hub.codexBridge.browserGlobal, "window.AidBridgeCodex", "documents browser bridge API");
 assert.ok(hub.readiness >= 90, "scores final hub as submission-ready");
+
+const ops = buildOpsDesk();
+assert.equal(ops.metrics.openCases, 4, "builds a four-case operations queue");
+assert.ok(ops.metrics.criticalCases >= 1, "counts critical cases");
+assert.ok(ops.metrics.minutesSaved > pack.impact.minutesSaved, "rolls up multi-case impact");
+assert.equal(ops.queue[0].urgency >= ops.queue[1].urgency, true, "sorts queue by urgency");
+assert.ok(ops.resourceLoad.length > 0, "computes resource load");
+assert.ok(ops.opsBrief.includes("AIDBRIDGE OPS DESK"), "exports copy-ready ops brief");
 
 console.log("AidBridge triage tests passed.");

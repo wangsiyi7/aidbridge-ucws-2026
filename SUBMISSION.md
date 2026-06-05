@@ -12,6 +12,7 @@
 - AI-native architecture note: `AI_NATIVE_ARCHITECTURE.md`
 - Chinese final submission playbook: `FINAL_SUBMISSION_PLAYBOOK_CN.md`
 - Privacy redaction, resource matching, and follow-up clock built into the demo
+- Ops Desk multi-case queue, resource pressure model, and copy-ready command brief built into the demo
 - Interactive Crisis Map workflow visualization built into the demo
 - Hackathon Constellation Hub built into the demo for idea-to-submission star-map visualization
 - Guided Project Wall field builder built into the Hub
@@ -27,6 +28,7 @@
 - Judge Q&A: `JUDGE_QA.md`
 - Editable pitch deck: `assets/AidBridge_UCWS_Pitch.pptx`
 - Hub screenshots: `assets/screenshot-hub.png`, `assets/screenshot-hub-mobile.png`
+- Ops Desk screenshot: `assets/screenshot-ops.png`
 - Ethics and safety note: `ETHICS_AND_SAFETY.md`
 - Community vote copy: `COMMUNITY_VOTE_KIT.md`
 - Social card: `assets/social-card.svg`
@@ -71,12 +73,13 @@ Avoid overclaiming:
 1. Load the migrant worker sample.
 2. Show detected Medical care and Legal or work rights.
 3. Show urgent score, interactive Crisis Map, redacted brief, matched resources, and evidence ledger.
-4. Click Hub and show the Hackathon Constellation star map generated from the AidBridge idea seed.
-5. Paste a new UCWS idea sentence, click Build Stars, then click a node and show the guided Project Wall fields plus Codex bridge JSON.
-6. Click Directory, apply a custom CSV, and show matching changes.
-7. Click Judge Lens and show the 100/100 case-quality audit, Impact Lens, and JSON export.
-8. Click Field Pack.
-9. Copy the pack and explain how it fits WhatsApp, NGO CRM, or helpdesk notes.
+4. Click Ops Desk and show multi-case priority, resource pressure, minutes saved, and the command brief.
+5. Click Hub and show the Hackathon Constellation star map generated from the AidBridge idea seed.
+6. Paste a new UCWS idea sentence, click Build Stars, then click a node and show the guided Project Wall fields plus Codex bridge JSON.
+7. Click Directory, apply a custom CSV, and show matching changes.
+8. Click Judge Lens and show the 100/100 case-quality audit, Singapore Launch Lens, Impact Lens, and JSON export.
+9. Click Field Pack.
+10. Copy the pack and explain how it fits WhatsApp, NGO CRM, or helpdesk notes.
 
 ## What Still Needs External User Action
 

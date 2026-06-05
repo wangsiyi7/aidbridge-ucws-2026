@@ -32,7 +32,7 @@ https://github.com/wangsiyi7/aidbridge-ucws-2026
 
 ## 6. Short Description / 项目短描述
 
-AidBridge 是一个面向志愿者、学校辅导员、NGO 和互助组织的社区救援分诊系统。它可以把 WhatsApp、热线、走访记录等混乱求助信息，在浏览器中快速转化为风险评分、需求识别、隐私脱敏摘要、可信资源匹配、证据台账、后续跟进时钟和人工交接脚本。
+AidBridge 是一个面向志愿者、学校辅导员、NGO 和互助组织的社区救援分诊系统。它可以把 WhatsApp、热线、走访记录等混乱求助信息，在浏览器中快速转化为风险评分、需求识别、隐私脱敏摘要、可信资源匹配、证据台账、后续跟进时钟和人工交接脚本。新增的 Ops Desk 可以把多个并发 case 组成值班队列，自动排序优先级、观察资源压力、汇总节省时间，并生成 duty lead 可复制的运营 brief。
 
 新增的 Hackathon Constellation Hub 可以把任何黑客松想法输入自动构建为星空节点图，并生成 Project Wall 提交引导与 Codex API 输出，让项目从“单一 Demo”升级为“想法到提交的可视化操作系统”。
 
@@ -44,6 +44,7 @@ AidBridge 解决的是社区救援中的真实高压问题：一线帮助者经�
 
 - 第一条安全回应
 - 紧急程度和置信度评分
+- Ops Desk 多 case 队列和资源压力视图
 - 自动识别的需求类别
 - 未来 60 分钟行动计划
 - 隐私脱敏摘要
@@ -95,11 +96,13 @@ AidBridge 将混乱输入转化为结构化救援行动包，并用可视化和�
 7. 使用 Judge Lens 查看质量审计和 Impact Lens
 8. 使用 Field Pack 复制一页操作简报
 9. 使用 Hub 将项目或新想法转换为星空节点、提交引导和 Codex API JSON
+10. 使用 Ops Desk 查看多 case 队列、资源负载和下一步运营 brief
 
 ## 10. Key Features / 核心功能
 
 - Multilingual aid triage：面向多语言求助信息的社区救援分诊
 - Deterministic risk scoring：可复现的紧急程度与置信度评分
+- Ops Desk：批量分诊多个 case，排序优先级，显示资源压力和 duty-lead brief
 - Need detection：识别医疗、庇护、食物、法律/劳工权益、心理健康、儿童/老人保护、证件与访问权限等需求
 - Crisis Map：将 case 路径可视化为可点击流程节点
 - Play Flow：自动播放救援路径，适合短时间评审演示
@@ -124,6 +127,7 @@ AidBridge 将混乱输入转化为结构化救援行动包，并用可视化和�
 - JavaScript ES modules
 - Canvas 2D visualization
 - Deterministic triage and risk-scoring engine
+- Ops Desk multi-case queue and resource-pressure model
 - Keyword and rule-based need detection
 - Privacy redaction layer
 - Resource matching directory
@@ -231,7 +235,7 @@ AidBridge 明确不替代医生、律师、警察或紧急服务。它是给受�
 
 ### Differentiation
 
-相比常见聊天机器人或 agent demo，AidBridge 交付的是完整操作层：行动包、资源路径、证据、审计、Impact、Hub 和 API。新增的 Hackathon Constellation Hub 让项目具备极强的视觉记忆点和提交材料自动化能力。
+相比常见聊天机器人或 agent demo，AidBridge 交付的是完整操作层：行动包、资源路径、证据、审计、Impact、Ops Desk、Hub 和 API。Ops Desk 让项目从单 case 生成器升级为团队级值班系统，Hackathon Constellation Hub 则让项目具备极强的视觉记忆点和提交材料自动化能力。
 
 ## 15. Screenshots / 截图材料
 
@@ -245,6 +249,12 @@ Judge Lens 图：
 
 ```text
 assets/screenshot-judge.png
+```
+
+Ops Desk 图：
+
+```text
+assets/screenshot-ops.png
 ```
 
 桌面 Demo 图：

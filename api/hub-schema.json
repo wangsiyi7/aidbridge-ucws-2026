@@ -10,6 +10,13 @@
     "output": "aidbridge:hub-built"
   },
   "methods": {
+    "buildOpsDesk": {
+      "input": {
+        "cases": "array of case inputs",
+        "resourceDirectory": "optional trusted resource directory"
+      },
+      "output": "Operations payload with metrics, priority queue, resource load, bottlenecks, and copy-ready ops brief."
+    },
     "buildIdeaConstellation": {
       "input": {
         "ideaText": "string"

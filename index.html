@@ -36,6 +36,7 @@
         </a>
         <nav class="nav-tabs" aria-label="Workspace views">
           <button class="tab is-active" data-view="workspace">Workspace</button>
+          <button class="tab" data-view="ops">Ops Desk</button>
           <button class="tab" data-view="hub">Hub</button>
           <button class="tab" data-view="directory">Directory</button>
           <button class="tab" data-view="field">Field Pack</button>
@@ -230,6 +231,59 @@
           </section>
         </aside>
       </main>
+
+      <section id="ops" class="view-panel" hidden>
+        <div class="view-inner ops-inner">
+          <div class="ops-head">
+            <div>
+              <p class="eyebrow">Ops Desk</p>
+              <h2>Team triage command center</h2>
+            </div>
+            <button id="copyOpsBriefBtn" class="primary-button" type="button">Copy Ops Brief</button>
+          </div>
+          <div class="ops-metrics" aria-label="Operations metrics">
+            <div>
+              <span>Open cases</span>
+              <strong id="opsCaseCount">--</strong>
+            </div>
+            <div>
+              <span>Critical</span>
+              <strong id="opsCriticalCount">--</strong>
+            </div>
+            <div>
+              <span>Minutes saved</span>
+              <strong id="opsMinutesSaved">--</strong>
+            </div>
+            <div>
+              <span>Resource pressure</span>
+              <strong id="opsPressure">--</strong>
+            </div>
+          </div>
+          <div class="ops-layout">
+            <section class="ops-panel" aria-labelledby="opsQueueTitle">
+              <div class="ops-panel-head">
+                <p class="eyebrow">Priority Queue</p>
+                <h3 id="opsQueueTitle">Next cases to own</h3>
+              </div>
+              <div id="opsQueue" class="ops-queue"></div>
+            </section>
+            <section class="ops-panel" aria-labelledby="opsLoadTitle">
+              <div class="ops-panel-head">
+                <p class="eyebrow">Resource Load</p>
+                <h3 id="opsLoadTitle">Capacity watch</h3>
+              </div>
+              <div id="opsResourceLoad" class="ops-resource-load"></div>
+            </section>
+          </div>
+          <section class="ops-panel" aria-labelledby="opsBriefTitle">
+            <div class="ops-panel-head">
+              <p class="eyebrow">Command Brief</p>
+              <h3 id="opsBriefTitle">What the duty lead should do next</h3>
+            </div>
+            <pre id="opsBrief" class="ops-brief"></pre>
+          </section>
+        </div>
+      </section>
 
       <section id="hub" class="view-panel hub-view" hidden>
         <div class="hub-shell">

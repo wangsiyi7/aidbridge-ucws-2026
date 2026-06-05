@@ -32,7 +32,7 @@ https://github.com/wangsiyi7/aidbridge-ucws-2026
 
 ## 6. Short Description
 
-AidBridge helps frontline volunteers, school counsellors, NGOs, and mutual-aid teams turn messy WhatsApp, hotline, walk-in, or email help requests into safe, field-ready action packs. It generates risk scores, detected needs, privacy-safe summaries, trusted resource matches, evidence notes, follow-up clocks, and human handoff scripts.
+AidBridge helps frontline volunteers, school counsellors, NGOs, and mutual-aid teams turn messy WhatsApp, hotline, walk-in, or email help requests into safe, field-ready action packs. It generates risk scores, detected needs, privacy-safe summaries, trusted resource matches, evidence notes, follow-up clocks, and human handoff scripts. The new Ops Desk turns multiple active cases into a duty queue, sorts priority by urgency, watches resource pressure, rolls up minutes saved, and exports a copy-ready command brief for the duty lead.
 
 The final-stage Hackathon Constellation Hub lets a judge or builder paste any UCWS idea and automatically turn it into a visual star map, Project Wall guidance, and a Codex bridge API payload.
 
@@ -44,6 +44,7 @@ Most chatbot demos stop at a generated answer. AidBridge is built as an operatin
 
 - Safe first response
 - Urgency and confidence score
+- Ops Desk multi-case queue and resource-pressure view
 - Detected need categories
 - Next-60-minute action plan
 - Privacy-safe redacted summary
@@ -95,11 +96,13 @@ Core workflow:
 7. Use Judge Lens and Impact Lens to inspect quality and estimated outcome.
 8. Copy the one-page Field Pack.
 9. Use the Hub to convert project ideas into constellation nodes, Project Wall guidance, and Codex API JSON.
+10. Use Ops Desk to inspect the multi-case queue, resource load, bottlenecks, and duty-lead brief.
 
 ## 10. Key Features
 
 - Multilingual aid triage for messy help requests
 - Deterministic urgency and confidence scoring
+- Ops Desk for batch case triage, priority sorting, resource pressure, and duty-lead briefs
 - Need detection for medical care, shelter, food access, legal/work rights, mental health, safeguarding, documents, and access
 - Interactive Crisis Map visualization
 - Play Flow auto-tour for judge demos
@@ -124,6 +127,7 @@ Core workflow:
 - JavaScript ES modules
 - Canvas 2D visualization
 - Deterministic triage and risk-scoring engine
+- Ops Desk multi-case queue and resource-pressure model
 - Keyword and rule-based need detection
 - Privacy redaction layer
 - Resource matching directory
@@ -231,7 +235,7 @@ AidBridge does not replace doctors, lawyers, police, emergency responders, or tr
 
 ### Differentiation
 
-AidBridge is not another generic chatbot or agent demo. It delivers an operating layer: action pack, resource route, evidence, audit, impact estimate, visual Hub, and Codex API. The Hackathon Constellation Hub gives the project a memorable visual identity and turns idea input into submission-ready structure.
+AidBridge is not another generic chatbot or agent demo. It delivers an operating layer: action pack, resource route, evidence, audit, impact estimate, Ops Desk, visual Hub, and Codex API. The Ops Desk moves the project from a single-case generator into a team-level duty system, while the Hackathon Constellation Hub gives it a memorable visual identity and turns idea input into submission-ready structure.
 
 ## 15. Screenshots
 
@@ -245,6 +249,12 @@ Judge Lens screenshot:
 
 ```text
 assets/screenshot-judge.png
+```
+
+Ops Desk screenshot:
+
+```text
+assets/screenshot-ops.png
 ```
 
 Desktop demo screenshot:

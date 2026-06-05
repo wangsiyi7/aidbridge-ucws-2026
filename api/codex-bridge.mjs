@@ -1,6 +1,7 @@
 import {
   buildActionPack,
   buildIdeaConstellation,
+  buildOpsDesk,
   directoryToCsv,
   parseResourceCsv
 } from "../app.js";
@@ -8,6 +9,7 @@ import {
 export {
   buildActionPack,
   buildIdeaConstellation,
+  buildOpsDesk,
   directoryToCsv,
   parseResourceCsv
 };
@@ -24,6 +26,7 @@ export const CODEX_BRIDGE_SCHEMA = {
   moduleMethods: [
     "buildCodexHub",
     "buildIdeaConstellation",
+    "buildOpsDesk",
     "buildActionPack",
     "directoryToCsv",
     "parseResourceCsv"

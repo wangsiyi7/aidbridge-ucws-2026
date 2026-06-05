@@ -74,6 +74,49 @@ const SAMPLE_CASES = [
   }
 ];
 
+const OPS_DESK_CASES = [
+  {
+    id: "MW-042",
+    title: "Dorm locked + fever",
+    owner: "Migrant worker desk",
+    text: SAMPLE_CASES[0].text,
+    location: "Singapore",
+    channel: "WhatsApp",
+    language: "English",
+    mode: "NGO worker"
+  },
+  {
+    id: "SC-118",
+    title: "Student sleeping in library",
+    owner: "School care lead",
+    text: SAMPLE_CASES[1].text,
+    location: "Singapore",
+    channel: "Walk-in desk",
+    language: "English",
+    mode: "School counsellor"
+  },
+  {
+    id: "FR-077",
+    title: "Baby formula + rent tonight",
+    owner: "Family relay lead",
+    text: SAMPLE_CASES[2].text,
+    location: "Singapore",
+    channel: "Hotline",
+    language: "Mixed",
+    mode: "Community volunteer"
+  },
+  {
+    id: "DO-204",
+    title: "Lost documents + no bank access",
+    owner: "Document navigator",
+    text: "A delivery rider lost his wallet, work permit copy, bank card, and SIM. He cannot receive salary this week and needs help replacing documents before his shift tomorrow.",
+    location: "Singapore",
+    channel: "Email",
+    language: "English",
+    mode: "Mutual aid lead"
+  }
+];
+
 const TRANSLATED_OPENERS = {
   English: "I am here with you. I will ask only what is needed and help you reach the safest next step.",
   Mandarin: "我在这里陪你。我们只确认必要信息，然后一起找到最安全的下一步。",
@@ -670,6 +713,135 @@ export function buildSingaporeLaunchPlan(pack) {
   };
 }
 
+function responseWindow(score) {
+  if (score.urgency >= 75) return "20 min";
+  if (score.urgency >= 45) return "60 min";
+  return "24 hr";
+}
+
+function pressureBand(value) {
+  if (value >= 80) return "High";
+  if (value >= 55) return "Watch";
+  return "Balanced";
+}
+
+export function buildOpsDesk(cases = OPS_DESK_CASES, resourceDirectory = DEFAULT_RESOURCE_DIRECTORY) {
+  const caseRows = cases.map((item, index) => {
+    const pack = buildActionPack(item, resourceDirectory);
+    const leadNeed = pack.needs[0]?.label || "Clarify";
+    const topResource = pack.resources[0]?.name || "Manual review";
+    return {
+      id: item.id || `CASE-${index + 1}`,
+      title: item.title || leadNeed,
+      owner: item.owner || item.mode || "Duty lead",
+      input: item,
+      pack,
+      urgency: pack.score.urgency,
+      band: pack.score.band,
+      confidence: pack.score.confidence,
+      leadNeed,
+      topResource,
+      responseWindow: responseWindow(pack.score),
+      nextAction: pack.actions[0],
+      minutesSaved: pack.impact.minutesSaved
+    };
+  }).sort((a, b) => b.urgency - a.urgency || b.confidence - a.confidence);
+
+  const resourceMap = new Map();
+  caseRows.forEach((row) => {
+    row.pack.resources.forEach((resource, resourceIndex) => {
+      const current = resourceMap.get(resource.name) || {
+        name: resource.name,
+        type: resource.type,
+        cases: 0,
+        criticalCases: 0,
+        pressure: 0,
+        trust: resource.trust,
+        fit: resource.fit
+      };
+      current.cases += 1;
+      current.criticalCases += row.urgency >= 75 ? 1 : 0;
+      current.pressure += Math.max(8, Math.round(row.urgency / (resourceIndex + 1)));
+      resourceMap.set(resource.name, current);
+    });
+  });
+
+  const resourceLoad = [...resourceMap.values()]
+    .map((resource) => ({
+      ...resource,
+      pressure: Math.min(100, resource.pressure),
+      band: pressureBand(Math.min(100, resource.pressure))
+    }))
+    .sort((a, b) => b.pressure - a.pressure || b.cases - a.cases);
+
+  const metrics = {
+    openCases: caseRows.length,
+    criticalCases: caseRows.filter((row) => row.urgency >= 75).length,
+    averageUrgency: Math.round(caseRows.reduce((sum, row) => sum + row.urgency, 0) / Math.max(1, caseRows.length)),
+    minutesSaved: caseRows.reduce((sum, row) => sum + row.minutesSaved, 0),
+    matchedRoutes: caseRows.reduce((sum, row) => sum + row.pack.resources.length, 0),
+    privacySignals: caseRows.reduce((sum, row) => sum + row.pack.impact.privacySignalsRedacted, 0),
+    pressure: resourceLoad[0]?.band || "Balanced"
+  };
+
+  const nextCase = caseRows[0];
+  const bottlenecks = [
+    metrics.criticalCases > 1
+      ? `${metrics.criticalCases} critical cases need named human owners before any low-risk follow-up.`
+      : "Critical load is manageable if the next case is owned now.",
+    resourceLoad[0]
+      ? `${resourceLoad[0].name} is the hottest route (${resourceLoad[0].pressure}/100 pressure).`
+      : "No route pressure yet; keep manual review open.",
+    metrics.privacySignals > 0
+      ? `${metrics.privacySignals} sensitive signal(s) require redaction before sharing.`
+      : "No direct sensitive signal detected in the current queue."
+  ];
+
+  const opsBrief = [
+    "AIDBRIDGE OPS DESK",
+    `Open cases: ${metrics.openCases}`,
+    `Critical cases: ${metrics.criticalCases}`,
+    `Average urgency: ${metrics.averageUrgency}/100`,
+    `Estimated operator minutes saved: ${metrics.minutesSaved}`,
+    "",
+    "NEXT CASE",
+    `${nextCase.id} - ${nextCase.title}`,
+    `Owner: ${nextCase.owner}`,
+    `Risk: ${nextCase.band} (${nextCase.urgency}/100), response window ${nextCase.responseWindow}`,
+    `Lead need: ${nextCase.leadNeed}`,
+    `Top route: ${nextCase.topResource}`,
+    `First action: ${nextCase.nextAction}`,
+    "",
+    "BOTTLENECKS",
+    ...bottlenecks.map((item) => `- ${item}`),
+    "",
+    "QUEUE",
+    ...caseRows.map((row, index) => `${index + 1}. ${row.id} ${row.title} - ${row.band}, ${row.responseWindow}, route: ${row.topResource}`)
+  ].join("\n");
+
+  return {
+    generatedAt: new Date().toISOString(),
+    metrics,
+    nextCaseId: nextCase?.id,
+    queue: caseRows.map((row) => ({
+      id: row.id,
+      title: row.title,
+      owner: row.owner,
+      urgency: row.urgency,
+      band: row.band,
+      confidence: row.confidence,
+      leadNeed: row.leadNeed,
+      topResource: row.topResource,
+      responseWindow: row.responseWindow,
+      nextAction: row.nextAction,
+      minutesSaved: row.minutesSaved
+    })),
+    resourceLoad,
+    bottlenecks,
+    opsBrief
+  };
+}
+
 export function buildFlowMap(pack) {
   const leadNeed = pack.needs[0]?.label || "Clarify";
   const topResource = pack.resources[0]?.name || "Manual review";
@@ -1003,6 +1175,7 @@ export function formatEvaluationJson(pack) {
 let activeResourceDirectory = DEFAULT_RESOURCE_DIRECTORY;
 let flowTourTimer;
 let currentHub;
+let currentOpsDesk;
 let hubCanvasFrame;
 let hubCanvasPhase = 0;
 let selectedHubNodeId = "core";
@@ -1252,6 +1425,56 @@ function renderFlowDetail(node) {
   byId("flowDetailTitle").textContent = node.label;
   byId("flowDetailValue").textContent = node.value;
   byId("flowDetailText").textContent = node.detail;
+}
+
+function renderOpsDesk(ops) {
+  currentOpsDesk = ops;
+  byId("opsCaseCount").textContent = String(ops.metrics.openCases);
+  byId("opsCriticalCount").textContent = String(ops.metrics.criticalCases);
+  byId("opsMinutesSaved").textContent = String(ops.metrics.minutesSaved);
+  byId("opsPressure").textContent = ops.metrics.pressure;
+  byId("opsBrief").textContent = ops.opsBrief;
+
+  byId("opsQueue").replaceChildren(...ops.queue.map((row, index) => {
+    const article = document.createElement("article");
+    article.className = `ops-case${index === 0 ? " is-next" : ""}`;
+    const top = document.createElement("div");
+    top.className = "ops-case-top";
+    const title = document.createElement("strong");
+    title.textContent = `${row.id} - ${row.title}`;
+    const score = document.createElement("span");
+    score.textContent = `${row.urgency}/100`;
+    top.append(title, score);
+    const meta = document.createElement("p");
+    meta.textContent = `${row.band}; ${row.responseWindow}; owner: ${row.owner}`;
+    const route = document.createElement("p");
+    route.textContent = `Lead need: ${row.leadNeed}. Route: ${row.topResource}.`;
+    const action = document.createElement("p");
+    action.textContent = row.nextAction;
+    article.append(top, meta, route, action);
+    return article;
+  }));
+
+  byId("opsResourceLoad").replaceChildren(...ops.resourceLoad.map((resource) => {
+    const item = document.createElement("div");
+    item.className = "ops-load-item";
+    const head = document.createElement("div");
+    head.className = "ops-load-head";
+    const title = document.createElement("strong");
+    title.textContent = resource.name;
+    const band = document.createElement("span");
+    band.textContent = `${resource.band} ${resource.pressure}/100`;
+    head.append(title, band);
+    const bar = document.createElement("div");
+    bar.className = "ops-load-bar";
+    const fill = document.createElement("i");
+    fill.style.width = `${resource.pressure}%`;
+    bar.append(fill);
+    const detail = document.createElement("p");
+    detail.textContent = `${resource.cases} case(s), ${resource.criticalCases} critical; ${resource.type}.`;
+    item.append(head, bar, detail);
+    return item;
+  }));
 }
 
 function selectFlowNode(index) {
@@ -1527,9 +1750,10 @@ if (typeof document !== "undefined") {
   let currentPack;
 
   function showView(view) {
-    const validView = ["workspace", "hub", "directory", "field", "review"].includes(view) ? view : "workspace";
+    const validView = ["workspace", "ops", "hub", "directory", "field", "review"].includes(view) ? view : "workspace";
     document.querySelectorAll(".tab").forEach((tab) => tab.classList.toggle("is-active", tab.dataset.view === validView));
     byId("workspace").hidden = validView !== "workspace";
+    byId("ops").hidden = validView !== "ops";
     byId("hub").hidden = validView !== "hub";
     byId("directory").hidden = validView !== "directory";
     byId("field").hidden = validView !== "field";
@@ -1559,6 +1783,12 @@ if (typeof document !== "undefined") {
     currentPack = currentPack || buildActionPack(getInput(), activeResourceDirectory);
     await navigator.clipboard.writeText(currentPack.fieldPack);
     showToast("Field pack copied");
+  });
+
+  byId("copyOpsBriefBtn").addEventListener("click", async () => {
+    currentOpsDesk = currentOpsDesk || buildOpsDesk(OPS_DESK_CASES, activeResourceDirectory);
+    await navigator.clipboard.writeText(currentOpsDesk.opsBrief);
+    showToast("Ops brief copied");
   });
 
   byId("flowPlayBtn").addEventListener("click", () => {
@@ -1631,6 +1861,7 @@ if (typeof document !== "undefined") {
       renderDirectory(activeResourceDirectory, false);
       currentPack = buildActionPack(getInput(), activeResourceDirectory);
       renderPack(currentPack);
+      renderOpsDesk(buildOpsDesk(OPS_DESK_CASES, activeResourceDirectory));
       showToast("Directory applied");
     } catch (error) {
       byId("directoryStatus").textContent = error.message || "Invalid CSV";
@@ -1643,11 +1874,13 @@ if (typeof document !== "undefined") {
     renderDirectory(activeResourceDirectory, true);
     currentPack = buildActionPack(getInput(), activeResourceDirectory);
     renderPack(currentPack);
+    renderOpsDesk(buildOpsDesk(OPS_DESK_CASES, activeResourceDirectory));
     showToast("Directory reset");
   });
 
   renderDirectory(activeResourceDirectory, true);
   currentPack = loadSample(0);
+  renderOpsDesk(buildOpsDesk(OPS_DESK_CASES, activeResourceDirectory));
   byId("hubIdeaInput").value = hubSeedFromPack(currentPack);
   renderHub(buildIdeaConstellation({ ideaText: byId("hubIdeaInput").value }, currentPack));
   window.addEventListener("resize", drawHubCanvas);
@@ -1668,7 +1901,9 @@ if (typeof document !== "undefined") {
     version: "aidbridge-codex-bridge-2026-06-05",
     buildActionPack,
     buildIdeaConstellation,
+    buildOpsDesk,
     getCurrentHub: () => currentHub,
+    getCurrentOpsDesk: () => currentOpsDesk,
     setIdeaText: (ideaText) => {
       byId("hubIdeaInput").value = String(ideaText || "");
       return byId("hubIdeaInput").value;
