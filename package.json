@@ -1,0 +1,21 @@
+{
+  "name": "aidbridge",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AidBridge: multilingual community aid triage and action-pack generator for UCWS Singapore Hackathon 2026.",
+  "type": "module",
+  "scripts": {
+    "start": "node tools/serve.mjs",
+    "test": "node tests/triage.test.mjs",
+    "benchmark": "node benchmarks/run.mjs",
+    "verify": "npm test && npm run benchmark"
+  },
+  "keywords": [
+    "ucws",
+    "ai-for-good",
+    "community-aid",
+    "triage",
+    "hackathon"
+  ],
+  "license": "MIT"
+}

@@ -1,0 +1,17 @@
+{
+  "name": "AidBridge",
+  "short_name": "AidBridge",
+  "description": "Multilingual community-aid triage that turns messy help requests into verified action packs.",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#fbfcf7",
+  "theme_color": "#18202f",
+  "icons": [
+    {
+      "src": "assets/logo.svg",
+      "sizes": "128x128",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

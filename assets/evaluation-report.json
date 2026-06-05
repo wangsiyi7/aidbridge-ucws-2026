@@ -1,0 +1,115 @@
+{
+  "project": "AidBridge",
+  "schemaVersion": "2026-06-04",
+  "generatedAt": "2026-06-05T07:57:47.225Z",
+  "summary": {
+    "total": 4,
+    "passed": 4,
+    "averageUrgency": 85,
+    "averageAuditScore": 100,
+    "averageMinutesSaved": 47,
+    "redactionPassRate": 100
+  },
+  "cases": [
+    {
+      "id": "migrant-worker-withheld-passport",
+      "name": "Migrant worker with medical and work-rights risk",
+      "passed": true,
+      "failures": [],
+      "expectedNeeds": [
+        "medical",
+        "housing",
+        "legal"
+      ],
+      "detectedNeeds": [
+        "medical",
+        "housing",
+        "food",
+        "legal",
+        "mental"
+      ],
+      "urgency": 100,
+      "riskBand": "Critical",
+      "confidence": 96,
+      "auditScore": 100,
+      "auditBand": "Judge-ready",
+      "minutesSaved": 59,
+      "privacySignalsRedacted": 1,
+      "topResource": "Migrant Worker Care Desk",
+      "redactionOk": true
+    },
+    {
+      "id": "student-food-shelter-self-harm",
+      "name": "Student with food, shelter, and mental-health risk",
+      "passed": true,
+      "failures": [],
+      "expectedNeeds": [
+        "food",
+        "housing",
+        "mental",
+        "child"
+      ],
+      "detectedNeeds": [
+        "housing",
+        "food",
+        "mental",
+        "child"
+      ],
+      "urgency": 100,
+      "riskBand": "Critical",
+      "confidence": 96,
+      "auditScore": 100,
+      "auditBand": "Judge-ready",
+      "minutesSaved": 54,
+      "privacySignalsRedacted": 0,
+      "topResource": "ShelterLink Night Desk",
+      "redactionOk": true
+    },
+    {
+      "id": "family-food-rent-injury",
+      "name": "Family essentials request with infant and injury signals",
+      "passed": true,
+      "failures": [],
+      "expectedNeeds": [
+        "medical",
+        "food",
+        "child"
+      ],
+      "detectedNeeds": [
+        "medical",
+        "food",
+        "child"
+      ],
+      "urgency": 100,
+      "riskBand": "Critical",
+      "confidence": 87,
+      "auditScore": 100,
+      "auditBand": "Judge-ready",
+      "minutesSaved": 49,
+      "privacySignalsRedacted": 0,
+      "topResource": "Community Pantry Relay",
+      "redactionOk": true
+    },
+    {
+      "id": "documents-access-loss",
+      "name": "Document and access loss without immediate danger",
+      "passed": true,
+      "failures": [],
+      "expectedNeeds": [
+        "documents"
+      ],
+      "detectedNeeds": [
+        "documents"
+      ],
+      "urgency": 39,
+      "riskBand": "Moderate",
+      "confidence": 69,
+      "auditScore": 100,
+      "auditBand": "Judge-ready",
+      "minutesSaved": 27,
+      "privacySignalsRedacted": 1,
+      "topResource": "Document Access Navigator",
+      "redactionOk": true
+    }
+  ]
+}

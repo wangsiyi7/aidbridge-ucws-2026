@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AidBridge - Community Aid Triage</title>
+    <meta
+      name="description"
+      content="AidBridge turns messy multilingual requests for help into verified community aid action packs."
+    />
+    <meta name="theme-color" content="#18202f" />
+    <meta property="og:title" content="AidBridge - Community Aid Triage" />
+    <meta
+      property="og:description"
+      content="Turn messy help requests into risk scores, redacted briefs, trusted resource matches, and field-ready handoff packs."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="assets/social-card.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="AidBridge - Community Aid Triage" />
+    <meta
+      name="twitter:description"
+      content="A public-good triage app for safer community aid handoffs."
+    />
+    <meta name="twitter:image" content="assets/social-card.svg" />
+    <link rel="icon" href="assets/logo.svg" />
+    <link rel="manifest" href="site.webmanifest" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="#workspace" aria-label="AidBridge home">
+          <img src="assets/logo.svg" alt="" />
+          <span>AidBridge</span>
+        </a>
+        <nav class="nav-tabs" aria-label="Workspace views">
+          <button class="tab is-active" data-view="workspace">Workspace</button>
+          <button class="tab" data-view="directory">Directory</button>
+          <button class="tab" data-view="field">Field Pack</button>
+          <button class="tab" data-view="review">Judge Lens</button>
+        </nav>
+        <div class="top-actions">
+          <button id="sampleBtn" class="icon-button" type="button" title="Load next sample">Sample</button>
+          <button id="exportBtn" class="primary-button" type="button">Copy Pack</button>
+        </div>
+      </header>
+
+      <main id="workspace" class="workspace">
+        <section class="intake-panel" aria-labelledby="intakeTitle">
+          <div class="section-head">
+            <p class="eyebrow">Live intake</p>
+            <h1 id="intakeTitle">Messy message to field-ready aid plan</h1>
+          </div>
+
+          <label class="field-label" for="caseInput">Incoming request</label>
+          <textarea id="caseInput" spellcheck="true"></textarea>
+
+          <div class="control-grid">
+            <label>
+              <span>Location</span>
+              <input id="locationInput" value="Singapore" />
+            </label>
+            <label>
+              <span>Channel</span>
+              <select id="channelInput">
+                <option>WhatsApp</option>
+                <option>Hotline</option>
+                <option>Walk-in desk</option>
+                <option>Email</option>
+              </select>
+            </label>
+            <label>
+              <span>Preferred language</span>
+              <select id="languageInput">
+                <option>English</option>
+                <option>Mandarin</option>
+                <option>Malay</option>
+                <option>Tamil</option>
+                <option>Hindi</option>
+                <option>Mixed</option>
+              </select>
+            </label>
+            <label>
+              <span>Operator mode</span>
+              <select id="modeInput">
+                <option>Community volunteer</option>
+                <option>School counsellor</option>
+                <option>NGO worker</option>
+                <option>Mutual aid lead</option>
+              </select>
+            </label>
+          </div>
+
+          <button id="analyzeBtn" class="analyze-button" type="button">Generate action pack</button>
+        </section>
+
+        <section class="results-panel" aria-live="polite">
+          <div class="score-strip">
+            <div>
+              <span class="metric-label">Urgency</span>
+              <strong id="urgencyScore">--</strong>
+            </div>
+            <div>
+              <span class="metric-label">Confidence</span>
+              <strong id="confidenceScore">--</strong>
+            </div>
+            <div>
+              <span class="metric-label">Needs</span>
+              <strong id="needsScore">--</strong>
+            </div>
+          </div>
+
+          <section class="flow-panel" aria-labelledby="flowTitle">
+            <div class="flow-head">
+              <div>
+                <p class="eyebrow">Crisis Map</p>
+                <h2 id="flowTitle">Case flow</h2>
+              </div>
+              <div class="flow-head-actions">
+                <button id="flowPlayBtn" class="flow-play" type="button">Play Flow</button>
+                <div id="flowPulse" class="flow-pulse" aria-label="Flow summary"></div>
+              </div>
+            </div>
+            <div class="flow-visual" aria-label="AidBridge case path">
+              <svg class="flow-svg" viewBox="0 0 100 22" preserveAspectRatio="none" aria-hidden="true">
+                <path class="flow-rail" d="M4 11 C 20 2, 32 20, 48 11 S 76 2, 96 11" />
+                <path class="flow-energy" d="M4 11 C 20 2, 32 20, 48 11 S 76 2, 96 11" />
+              </svg>
+              <div id="flowNodes" class="flow-nodes"></div>
+            </div>
+            <div class="flow-detail" aria-live="polite">
+              <div>
+                <span id="flowDetailTitle">Signal intake</span>
+                <strong id="flowDetailValue">--</strong>
+              </div>
+              <p id="flowDetailText"></p>
+            </div>
+          </section>
+
+          <div class="output-grid">
+            <article class="output-card accent-safety">
+              <div class="card-head">
+                <span class="badge">Safety</span>
+                <h2>First response</h2>
+              </div>
+              <p id="firstResponse" class="large-copy"></p>
+            </article>
+
+            <article class="output-card accent-action">
+              <div class="card-head">
+                <span class="badge">Plan</span>
+                <h2>Next 60 minutes</h2>
+              </div>
+              <ol id="actionList" class="action-list"></ol>
+            </article>
+
+            <article class="output-card accent-proof">
+              <div class="card-head">
+                <span class="badge">Proof</span>
+                <h2>Evidence ledger</h2>
+              </div>
+              <ul id="evidenceList" class="evidence-list"></ul>
+            </article>
+
+            <article class="output-card accent-privacy">
+              <div class="card-head">
+                <span class="badge">Privacy</span>
+                <h2>Redacted brief</h2>
+              </div>
+              <p id="privacyBrief" class="large-copy"></p>
+            </article>
+
+            <article class="output-card accent-resource">
+              <div class="card-head">
+                <span class="badge">Match</span>
+                <h2>Trusted resources</h2>
+              </div>
+              <ul id="resourceMatchList" class="resource-match-list"></ul>
+            </article>
+
+            <article class="output-card accent-clock">
+              <div class="card-head">
+                <span class="badge">Clock</span>
+                <h2>Follow-up clock</h2>
+              </div>
+              <ol id="followupList" class="action-list"></ol>
+            </article>
+
+            <article class="output-card accent-script">
+              <div class="card-head">
+                <span class="badge">Send</span>
+                <h2>Human handoff script</h2>
+              </div>
+              <p id="handoffScript" class="script-copy"></p>
+            </article>
+          </div>
+        </section>
+
+        <aside class="side-panel">
+          <section class="side-section">
+            <p class="eyebrow">Detected needs</p>
+            <div id="needChips" class="chip-stack"></div>
+          </section>
+          <section class="side-section">
+            <p class="eyebrow">Matched resources</p>
+            <div id="resourceMatches" class="route-list"></div>
+          </section>
+          <section class="side-section">
+            <p class="eyebrow">Resource route</p>
+            <div id="resourceRoutes" class="route-list"></div>
+          </section>
+          <section class="side-section">
+            <p class="eyebrow">Judge lens</p>
+            <dl class="judge-grid">
+              <div>
+                <dt>Community</dt>
+                <dd>Clear, shareable aid pack</dd>
+              </div>
+              <div>
+                <dt>AI Eval</dt>
+                <dd>Deterministic, tested engine</dd>
+              </div>
+              <div>
+                <dt>Experts</dt>
+                <dd>Real-world care workflow</dd>
+              </div>
+            </dl>
+          </section>
+        </aside>
+      </main>
+
+      <section id="field" class="view-panel" hidden>
+        <div class="view-inner">
+          <p class="eyebrow">Field Pack</p>
+          <h2>One-page operator brief</h2>
+          <pre id="fieldPack" class="pack-output"></pre>
+        </div>
+      </section>
+
+      <section id="directory" class="view-panel" hidden>
+        <div class="view-inner">
+          <p class="eyebrow">Resource Directory</p>
+          <h2>Local resource matching</h2>
+          <div class="directory-actions">
+            <button id="applyDirectoryBtn" class="primary-button" type="button">Apply CSV</button>
+            <button id="resetDirectoryBtn" class="icon-button" type="button">Reset</button>
+            <span id="directoryStatus" class="directory-status"></span>
+          </div>
+          <label class="field-label" for="directoryInput">Resource CSV</label>
+          <textarea id="directoryInput" class="directory-input" spellcheck="false"></textarea>
+          <div class="directory-table-wrap">
+            <table class="directory-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Needs</th>
+                  <th>Languages</th>
+                  <th>Trust</th>
+                  <th>Availability</th>
+                </tr>
+              </thead>
+              <tbody id="directoryTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="review" class="view-panel" hidden>
+        <div class="view-inner">
+          <p class="eyebrow">Judge Lens</p>
+          <h2>Why this wins</h2>
+          <section class="audit-panel" aria-labelledby="auditTitle">
+            <div class="audit-head">
+              <div>
+                <p class="eyebrow">Live audit</p>
+                <h3 id="auditTitle">Case quality score</h3>
+              </div>
+              <div class="audit-score">
+                <strong id="auditScore">--</strong>
+                <span id="auditBand">Generate a pack</span>
+              </div>
+            </div>
+            <ol id="auditList" class="audit-list"></ol>
+          </section>
+          <section class="impact-panel" aria-labelledby="impactTitle">
+            <div>
+              <p class="eyebrow">Impact Lens</p>
+              <h3 id="impactTitle">Operational outcome estimate</h3>
+            </div>
+            <div class="impact-grid">
+              <div class="impact-metric primary">
+                <span>Minutes saved</span>
+                <strong id="impactSaved">--</strong>
+              </div>
+              <div class="impact-metric">
+                <span>Manual baseline</span>
+                <strong id="impactBaseline">--</strong>
+              </div>
+              <div class="impact-metric">
+                <span>AidBridge run</span>
+                <strong id="impactAidbridge">--</strong>
+              </div>
+              <div class="impact-metric">
+                <span>Privacy signals</span>
+                <strong id="impactRedacted">--</strong>
+              </div>
+              <div class="impact-metric">
+                <span>Resource routes</span>
+                <strong id="impactRoutes">--</strong>
+              </div>
+            </div>
+            <p id="impactSummary" class="impact-summary"></p>
+          </section>
+          <section class="audit-export-panel" aria-labelledby="jsonTitle">
+            <div class="audit-export-head">
+              <div>
+                <p class="eyebrow">Evaluation JSON</p>
+                <h3 id="jsonTitle">Machine-readable case packet</h3>
+              </div>
+              <button id="copyEvaluationBtn" class="primary-button" type="button">Copy JSON</button>
+            </div>
+            <pre id="evaluationJson" class="json-output"></pre>
+          </section>
+          <div class="review-grid">
+            <article>
+              <h3>Different from crowded tracks</h3>
+              <p>Most public UCWS repos cluster around agent frameworks, finance agents, voice demos, and coding skills. AidBridge is a finished public-good application with a visible user loop.</p>
+            </article>
+            <article>
+              <h3>Useful without setup</h3>
+              <p>Community volunteers can paste a request and get a response, route, evidence note, privacy-safe summary, and matched resource list in seconds. No account, model key, or backend is required for the demo.</p>
+            </article>
+            <article>
+              <h3>Expandable AI architecture</h3>
+              <p>The current engine is deterministic for trust and tests. The same schema can be upgraded with LLM extraction, RAG over local NGO directories, privacy review, and human case ownership.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
