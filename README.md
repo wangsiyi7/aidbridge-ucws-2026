@@ -4,6 +4,9 @@ AidBridge turns messy multilingual requests for help into verified, field-ready 
 
 Built for **UCWS Singapore Hackathon 2026** as an Application + DeepResearch-ready public-good project.
 
+Live demo: https://wangsiyi7.github.io/aidbridge-ucws-2026/?demo=1  
+Repository: https://github.com/wangsiyi7/aidbridge-ucws-2026
+
 ## Problem
 
 Frontline helpers often receive urgent requests through WhatsApp, hotlines, walk-in desks, or informal community chats. The message is usually incomplete, emotional, multilingual, and risky. A volunteer has to decide what to ask, what to solve first, what evidence to preserve, and who should own the follow-up.

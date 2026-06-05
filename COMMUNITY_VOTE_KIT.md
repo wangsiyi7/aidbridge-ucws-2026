@@ -23,9 +23,9 @@ Paste a messy WhatsApp or hotline request, and AidBridge generates:
 
 It is not trying to replace professionals. It helps the first human responder avoid improvising when the situation is urgent.
 
-Demo: `[DEMO_URL]`  
+Demo: `https://wangsiyi7.github.io/aidbridge-ucws-2026/?demo=1`  
 Project Wall: `[PROJECT_WALL_URL]`  
-Repo: `[REPO_URL]`
+Repo: `https://github.com/wangsiyi7/aidbridge-ucws-2026`
 
 ## WhatsApp / Discord Message
 
@@ -41,7 +41,7 @@ We built AidBridge for #UCWS2026: multilingual community-aid triage for the firs
 
 Risk scoring. Privacy redaction. Trusted resource matching. Evidence ledger. Human handoff.
 
-Demo: `[DEMO_URL]`  
+Demo: `https://wangsiyi7.github.io/aidbridge-ucws-2026/?demo=1`  
 Vote: `[PROJECT_WALL_URL]`
 
 ## Feedback Questions

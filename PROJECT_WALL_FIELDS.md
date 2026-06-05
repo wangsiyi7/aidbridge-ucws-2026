@@ -24,18 +24,11 @@ AidBridge is built for AI for Good and AI for All: it makes crisis-adjacent supp
 
 ## Demo URL
 
-To be filled after deployment.
-
-Suggested deployment targets:
-
-- GitHub Pages
-- Vercel
-- Netlify
-- Cloudflare Pages
+https://wangsiyi7.github.io/aidbridge-ucws-2026/?demo=1
 
 ## Repo URL
 
-To be filled after pushing the `aidbridge/` directory to GitHub.
+https://github.com/wangsiyi7/aidbridge-ucws-2026
 
 ## Tech Stack
 
