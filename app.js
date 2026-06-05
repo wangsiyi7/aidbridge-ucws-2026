@@ -158,6 +158,107 @@ export const DEFAULT_RESOURCE_DIRECTORY = [
   }
 ];
 
+const HUB_DEFAULT_IDEA = [
+  "AidBridge: multilingual community-aid triage for UCWS Singapore Hackathon 2026.",
+  "Input messy WhatsApp, hotline, or walk-in requests and produce safe action packs.",
+  "Visualize risk, needs, privacy, resource routing, evidence, impact, and Project Wall submission readiness.",
+  "Expose a Codex bridge API so future agents can inject ideas, read constellation nodes, and build submission copy."
+].join("\n");
+
+const HUB_DIMENSIONS = [
+  {
+    id: "problem",
+    label: "Problem signal",
+    group: "user",
+    color: "#62f5d0",
+    keywords: ["problem", "pain", "urgent", "messy", "risk", "delay", "unsafe", "help", "request", "crisis"],
+    guide: "Name the painful moment and the user who feels it."
+  },
+  {
+    id: "beneficiary",
+    label: "Beneficiary",
+    group: "user",
+    color: "#9df2ff",
+    keywords: ["volunteer", "ngo", "student", "worker", "counsellor", "community", "frontline", "migrant", "family", "user"],
+    guide: "Specify the exact person helped, not a broad market."
+  },
+  {
+    id: "ai",
+    label: "AI layer",
+    group: "system",
+    color: "#8ea4ff",
+    keywords: ["ai", "agent", "llm", "model", "rag", "extract", "classify", "score", "codex", "automation"],
+    guide: "Explain where intelligence is used and why it improves the workflow."
+  },
+  {
+    id: "data",
+    label: "Data source",
+    group: "system",
+    color: "#caa8ff",
+    keywords: ["data", "csv", "directory", "repo", "github", "api", "database", "resource", "input", "source"],
+    guide: "Show what information feeds the system and how it stays trusted."
+  },
+  {
+    id: "safety",
+    label: "Safety guardrail",
+    group: "system",
+    color: "#ffb86c",
+    keywords: ["privacy", "redact", "safe", "consent", "audit", "risk", "guardrail", "human", "handoff", "evidence"],
+    guide: "State what the tool will not do and how humans remain in control."
+  },
+  {
+    id: "visual",
+    label: "Visual demo",
+    group: "system",
+    color: "#ff70ab",
+    keywords: ["visual", "map", "graph", "node", "hub", "dashboard", "star", "flow", "canvas", "demo"],
+    guide: "Give judges an instantly legible interaction they can remember."
+  },
+  {
+    id: "evaluation",
+    label: "Evaluation",
+    group: "artifact",
+    color: "#f7fb6a",
+    keywords: ["test", "benchmark", "score", "metric", "json", "evaluation", "judge", "impact", "minutes", "readiness"],
+    guide: "Attach measurable proof, not just claims."
+  },
+  {
+    id: "submission",
+    label: "Submission pack",
+    group: "artifact",
+    color: "#ffffff",
+    keywords: ["submit", "project wall", "demo url", "repo", "pitch", "deck", "screenshot", "track", "tagline"],
+    guide: "Convert the idea into fields, screenshots, links, and a short pitch."
+  }
+];
+
+const HUB_ARTIFACTS = [
+  {
+    id: "demo",
+    label: "Live demo URL",
+    color: "#62f5d0",
+    detail: "Public GitHub Pages demo with ?demo=1 autoplay for judges."
+  },
+  {
+    id: "repo",
+    label: "GitHub repo",
+    color: "#8ea4ff",
+    detail: "Public source code, tests, benchmark, and deployment docs."
+  },
+  {
+    id: "wall",
+    label: "Project Wall fields",
+    color: "#ff70ab",
+    detail: "Copy-ready title, tagline, description, stack, screenshot, and pitch copy."
+  },
+  {
+    id: "codex",
+    label: "Codex bridge API",
+    color: "#f7fb6a",
+    detail: "Browser global and ES module for injecting ideas and reading star-map payloads."
+  }
+];
+
 export function normalizeText(text) {
   return String(text || "").toLowerCase().replace(/\s+/g, " ").trim();
 }
@@ -535,6 +636,234 @@ export function buildFlowMap(pack) {
   };
 }
 
+function slugify(value) {
+  return normalizeText(value).replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 44) || "idea";
+}
+
+function splitIdeaSegments(text) {
+  const source = String(text || "").trim();
+  if (!source) return [];
+  const rough = source
+    .split(/\n{2,}|\n\s*(?:[-*]|\d+[.)])\s+/)
+    .map((item) => item.replace(/\s+/g, " ").trim())
+    .filter((item) => item.length > 12);
+  if (rough.length > 1) return rough.slice(0, 9);
+  return splitSentences(source).filter((item) => item.length > 12).slice(0, 7);
+}
+
+function inferProjectName(text) {
+  const source = String(text || "").trim();
+  const firstLine = source.split(/\n/).map((item) => item.trim()).find(Boolean) || "AidBridge";
+  const colonMatch = firstLine.match(/^([A-Za-z0-9][A-Za-z0-9\s-]{1,38})\s*:/);
+  if (colonMatch) return colonMatch[1].trim();
+  const titleWords = firstLine
+    .replace(/[^A-Za-z0-9\s-]/g, " ")
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 4);
+  return titleWords.join(" ") || "AidBridge";
+}
+
+function summarizeIdea(text) {
+  const sentence = splitSentences(text)[0] || String(text || "").replace(/\s+/g, " ").trim();
+  return sentence.length > 160 ? `${sentence.slice(0, 157)}...` : sentence;
+}
+
+function dimensionScore(text, dimension) {
+  const normalized = normalizeText(text);
+  return dimension.keywords.reduce((sum, keyword) => sum + (normalized.includes(keyword) ? 1 : 0), 0);
+}
+
+function nodePosition(index, total, radius, start = -Math.PI / 2) {
+  const angle = start + (Math.PI * 2 * index) / Math.max(1, total);
+  return {
+    x: 0.5 + Math.cos(angle) * radius,
+    y: 0.5 + Math.sin(angle) * radius
+  };
+}
+
+function makeSubmissionGuidance({ projectName, sourceText, dimensions, pack }) {
+  const leadNeed = pack?.needs?.[0]?.label || "hackathon user pain";
+  const strongest = dimensions.slice(0, 3).map((dimension) => dimension.label).join(", ");
+  const tagline = projectName === "AidBridge"
+    ? "Multilingual community-aid triage that turns messy help requests into verified action packs."
+    : `A guided AI hub that turns ${leadNeed.toLowerCase()} ideas into a visual, submission-ready project map.`;
+  const description = [
+    `${projectName} turns raw hackathon thinking into a visible constellation of users, AI layers, data sources, guardrails, demo artifacts, and evaluation proof.`,
+    `The strongest current angles are ${strongest || "problem clarity, evaluation, and submission readiness"}.`,
+    "The Hub guides Project Wall filling by generating the title, tagline, track fit, proof points, demo links, and next actions from one idea input."
+  ].join(" ");
+  const missing = [
+    "Confirm real team member names and profile links.",
+    "Paste the final Project Wall URL after submission.",
+    "Record a 60-90 second walkthrough if the platform exposes a demo video field."
+  ];
+  return {
+    projectName,
+    tagline,
+    track: "Application; add DeepResearch if multi-select is allowed",
+    description,
+    demoUrl: "https://wangsiyi7.github.io/aidbridge-ucws-2026/?demo=1",
+    repoUrl: "https://github.com/wangsiyi7/aidbridge-ucws-2026",
+    screenshot: "assets/screenshot-judge.png",
+    keyProof: [
+      `${dimensions.length} idea dimensions mapped`,
+      pack ? `${pack.audit.score}/100 live case-quality audit` : "Live readiness audit",
+      pack ? `${pack.impact.minutesSaved} operator minutes saved in the active sample` : "Impact estimate ready",
+      "Browser API and ES module released for Codex handoff"
+    ],
+    guidedSteps: [
+      {
+        label: "Project name",
+        value: projectName,
+        detail: "Use the short, memorable name detected from the first line or keep AidBridge."
+      },
+      {
+        label: "Tagline",
+        value: tagline,
+        detail: "Lead with the transformation, not implementation details."
+      },
+      {
+        label: "Description",
+        value: description,
+        detail: "Mention user, workflow, visible constellation, safety, evidence, and API bridge."
+      },
+      {
+        label: "Demo and repo",
+        value: "Paste the live demo and GitHub repository URLs.",
+        detail: "Use ?demo=1 so judges land on an active guided walkthrough."
+      },
+      {
+        label: "Proof",
+        value: "Attach screenshot, benchmark report, and evaluation JSON.",
+        detail: "This turns the project from an idea into an auditable submission."
+      }
+    ],
+    missing,
+    sourceSummary: summarizeIdea(sourceText)
+  };
+}
+
+export function buildIdeaConstellation(input = {}, pack) {
+  const sourceText = (typeof input === "string" ? input : input.ideaText || input.text || "").trim() || HUB_DEFAULT_IDEA;
+  const projectName = inferProjectName(sourceText);
+  const segments = splitIdeaSegments(sourceText);
+  const dimensionMatches = HUB_DIMENSIONS
+    .map((dimension) => ({
+      ...dimension,
+      matchScore: dimensionScore(sourceText, dimension)
+    }))
+    .sort((a, b) => b.matchScore - a.matchScore || a.label.localeCompare(b.label));
+  const selectedDimensions = dimensionMatches
+    .filter((dimension, index) => dimension.matchScore > 0 || index < 5)
+    .slice(0, 8);
+  const nodes = [{
+    id: "core",
+    label: projectName,
+    type: "core",
+    group: "project",
+    color: "#f7fb6a",
+    x: 0.5,
+    y: 0.5,
+    radius: 24,
+    score: 100,
+    detail: summarizeIdea(sourceText)
+  }];
+  const edges = [];
+
+  selectedDimensions.forEach((dimension, index) => {
+    const position = nodePosition(index, selectedDimensions.length, 0.28, -Math.PI / 2);
+    nodes.push({
+      id: `dimension-${dimension.id}`,
+      label: dimension.label,
+      type: "dimension",
+      group: dimension.group,
+      color: dimension.color,
+      x: position.x,
+      y: position.y,
+      radius: 13 + Math.min(7, dimension.matchScore * 2),
+      score: Math.min(100, 52 + dimension.matchScore * 16),
+      detail: `${dimension.guide} Matched ${dimension.matchScore} signal(s).`
+    });
+    edges.push({
+      from: "core",
+      to: `dimension-${dimension.id}`,
+      strength: Math.min(1, 0.35 + dimension.matchScore * 0.16),
+      reason: dimension.guide
+    });
+  });
+
+  segments.forEach((segment, index) => {
+    const position = nodePosition(index, Math.max(segments.length, 3), 0.41, Math.PI / 7);
+    const bestDimension = selectedDimensions
+      .map((dimension) => ({ dimension, score: dimensionScore(segment, dimension) }))
+      .sort((a, b) => b.score - a.score)[0]?.dimension || selectedDimensions[index % selectedDimensions.length];
+    const id = `idea-${index + 1}-${slugify(segment)}`;
+    nodes.push({
+      id,
+      label: segment.length > 38 ? `${segment.slice(0, 35)}...` : segment,
+      type: "idea",
+      group: "user",
+      color: bestDimension?.color || "#62f5d0",
+      x: position.x,
+      y: position.y,
+      radius: 9 + Math.min(7, segment.length / 45),
+      score: 70,
+      detail: segment
+    });
+    edges.push({
+      from: id,
+      to: bestDimension ? `dimension-${bestDimension.id}` : "core",
+      strength: 0.62,
+      reason: bestDimension ? `Feeds ${bestDimension.label}` : "Feeds project core"
+    });
+  });
+
+  HUB_ARTIFACTS.forEach((artifact, index) => {
+    const position = nodePosition(index, HUB_ARTIFACTS.length, 0.46, Math.PI / 2.8);
+    const id = `artifact-${artifact.id}`;
+    nodes.push({
+      id,
+      label: artifact.label,
+      type: "artifact",
+      group: "artifact",
+      color: artifact.color,
+      x: position.x,
+      y: position.y,
+      radius: 12,
+      score: 92,
+      detail: artifact.detail
+    });
+    edges.push({
+      from: "core",
+      to: id,
+      strength: 0.74,
+      reason: "Submission artifact"
+    });
+  });
+
+  const readiness = Math.min(100, Math.round(56 + selectedDimensions.length * 4 + HUB_ARTIFACTS.length * 2 + (pack?.audit?.score || 0) / 4));
+  const guidance = makeSubmissionGuidance({ projectName, sourceText, dimensions: selectedDimensions, pack });
+  return {
+    schemaVersion: "aidbridge-hub-2026-06-05",
+    generatedAt: new Date().toISOString(),
+    projectName,
+    readiness,
+    sourceText,
+    summary: guidance.description,
+    nodes,
+    edges,
+    guidance,
+    codexBridge: {
+      browserGlobal: "window.AidBridgeCodex",
+      module: "./api/codex-bridge.mjs",
+      eventInput: "aidbridge:codex-idea",
+      eventOutput: "aidbridge:hub-built",
+      methods: ["buildIdeaConstellation", "buildFromIdea", "getCurrentHub", "setIdeaText", "importCodexContext"]
+    }
+  };
+}
+
 export function formatEvaluationJson(pack) {
   return JSON.stringify({
     project: "AidBridge",
@@ -584,6 +913,10 @@ export function formatEvaluationJson(pack) {
 
 let activeResourceDirectory = DEFAULT_RESOURCE_DIRECTORY;
 let flowTourTimer;
+let currentHub;
+let hubCanvasFrame;
+let hubCanvasPhase = 0;
+let selectedHubNodeId = "core";
 
 function makeActions(needs, input, score) {
   const leadNeed = needs[0];
@@ -837,6 +1170,199 @@ function startFlowTour() {
   }, 1150);
 }
 
+function hubSeedFromPack(pack) {
+  const needs = pack?.needs?.map((need) => need.label).join(", ") || "community aid triage";
+  const routes = pack?.resources?.slice(0, 3).map((resource) => resource.name).join(", ") || "trusted local resources";
+  return [
+    "AidBridge: UCWS Singapore Hackathon hub for safer community aid response.",
+    `Problem: frontline helpers receive urgent, messy requests involving ${needs}.`,
+    "AI layer: deterministic triage now, upgradeable to LLM extraction and RAG over verified directories.",
+    `Data source: local CSV resource directory, matched route list, and ${routes}.`,
+    "Safety: privacy redaction, evidence ledger, human handoff, follow-up clock, and Judge Lens audit.",
+    "Visual demo: Crisis Map plus this Hackathon Constellation Hub for idea-to-submission navigation.",
+    "Submission pack: GitHub Pages demo, public repo, benchmark report, pitch deck, Project Wall fields, and Codex bridge API."
+  ].join("\n");
+}
+
+function formatHubGuide(hub) {
+  return [
+    `PROJECT: ${hub.guidance.projectName}`,
+    `TAGLINE: ${hub.guidance.tagline}`,
+    `TRACK: ${hub.guidance.track}`,
+    "",
+    "DESCRIPTION:",
+    hub.guidance.description,
+    "",
+    `DEMO: ${hub.guidance.demoUrl}`,
+    `REPO: ${hub.guidance.repoUrl}`,
+    `SCREENSHOT: ${hub.guidance.screenshot}`,
+    "",
+    "PROOF:",
+    ...hub.guidance.keyProof.map((item) => `- ${item}`),
+    "",
+    "MISSING HUMAN FIELDS:",
+    ...hub.guidance.missing.map((item) => `- ${item}`)
+  ].join("\n");
+}
+
+function renderHubNodeDetail(node) {
+  if (!node) return;
+  byId("hubNodeTitle").textContent = node.label;
+  byId("hubNodeDetail").textContent = `${node.type.toUpperCase()} / ${node.group}: ${node.detail}`;
+}
+
+function renderHubGuidance(hub) {
+  byId("hubGuidanceList").replaceChildren(...hub.guidance.guidedSteps.map((step) => {
+    const li = document.createElement("li");
+    const strong = document.createElement("strong");
+    strong.textContent = step.label;
+    const value = document.createElement("span");
+    value.textContent = step.value;
+    const detail = document.createElement("span");
+    detail.textContent = step.detail;
+    li.append(strong, value, detail);
+    return li;
+  }));
+}
+
+function renderHub(hub, selectedId = "core") {
+  currentHub = hub;
+  selectedHubNodeId = selectedId;
+  byId("hubNodeCount").textContent = String(hub.nodes.length);
+  byId("hubEdgeCount").textContent = String(hub.edges.length);
+  byId("hubReadiness").textContent = `${hub.readiness}%`;
+  byId("hubJsonOutput").textContent = JSON.stringify(hub, null, 2);
+  document.documentElement.dataset.hubNodes = String(hub.nodes.length);
+  document.documentElement.dataset.hubEdges = String(hub.edges.length);
+  document.documentElement.dataset.hubReadiness = String(hub.readiness);
+  renderHubGuidance(hub);
+  renderHubNodeDetail(hub.nodes.find((node) => node.id === selectedHubNodeId) || hub.nodes[0]);
+  window.dispatchEvent(new CustomEvent("aidbridge:hub-built", { detail: hub }));
+  startHubCanvas();
+}
+
+function resizeHubCanvas(canvas) {
+  const rect = canvas.getBoundingClientRect();
+  const ratio = window.devicePixelRatio || 1;
+  const width = Math.max(320, Math.round(rect.width * ratio));
+  const height = Math.max(320, Math.round(rect.height * ratio));
+  if (canvas.width !== width || canvas.height !== height) {
+    canvas.width = width;
+    canvas.height = height;
+  }
+  return { width, height, ratio };
+}
+
+function drawHubCanvas() {
+  const canvas = byId("hubCanvas");
+  if (!canvas || !currentHub) return;
+  const { width, height, ratio } = resizeHubCanvas(canvas);
+  const ctx = canvas.getContext("2d");
+  const nodes = currentHub.nodes;
+  const byNodeId = new Map(nodes.map((node) => [node.id, node]));
+  const compact = width / ratio < 640;
+  ctx.clearRect(0, 0, width, height);
+  ctx.fillStyle = "#080d16";
+  ctx.fillRect(0, 0, width, height);
+
+  ctx.save();
+  ctx.globalAlpha = 0.5;
+  for (let index = 0; index < 90; index += 1) {
+    const x = ((index * 73) % 1000) / 1000 * width;
+    const y = ((index * 191) % 1000) / 1000 * height;
+    const twinkle = 0.35 + Math.sin(hubCanvasPhase / 18 + index) * 0.22;
+    ctx.fillStyle = `rgba(231, 248, 242, ${Math.max(0.12, twinkle)})`;
+    ctx.fillRect(x, y, ratio, ratio);
+  }
+  ctx.restore();
+
+  currentHub.edges.forEach((edge) => {
+    const from = byNodeId.get(edge.from);
+    const to = byNodeId.get(edge.to);
+    if (!from || !to) return;
+    const fromX = from.x * width;
+    const fromY = from.y * height;
+    const toX = to.x * width;
+    const toY = to.y * height;
+    const glow = 0.18 + edge.strength * 0.34;
+    ctx.beginPath();
+    ctx.moveTo(fromX, fromY);
+    ctx.lineTo(toX, toY);
+    ctx.strokeStyle = `rgba(98, 245, 208, ${glow})`;
+    ctx.lineWidth = Math.max(1, edge.strength * 2.2 * ratio);
+    ctx.stroke();
+  });
+
+  nodes.forEach((node) => {
+    const x = node.x * width;
+    const y = node.y * height;
+    const active = node.id === selectedHubNodeId;
+    const pulse = active ? 1.18 + Math.sin(hubCanvasPhase / 8) * 0.08 : 1;
+    const radius = node.radius * ratio * pulse;
+    const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius * 2.3);
+    gradient.addColorStop(0, node.color);
+    gradient.addColorStop(0.4, `${node.color}cc`);
+    gradient.addColorStop(1, "rgba(255, 255, 255, 0)");
+    ctx.fillStyle = gradient;
+    ctx.beginPath();
+    ctx.arc(x, y, radius * 2.2, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, Math.PI * 2);
+    ctx.fillStyle = node.color;
+    ctx.fill();
+    ctx.lineWidth = active ? 3 * ratio : 1.4 * ratio;
+    ctx.strokeStyle = active ? "#ffffff" : "rgba(255, 255, 255, 0.62)";
+    ctx.stroke();
+
+    const shouldLabel = !compact || active || node.type === "core" || node.type === "dimension";
+    if (shouldLabel) {
+      const maxLabel = compact ? 17 : 24;
+      const label = node.label.length > maxLabel ? `${node.label.slice(0, maxLabel - 2)}...` : node.label;
+      ctx.font = `${Math.max(10, (compact ? 10 : 12) * ratio)}px ui-monospace, Consolas, monospace`;
+      ctx.fillStyle = active ? "#ffffff" : "rgba(231, 248, 242, 0.82)";
+      ctx.textAlign = "center";
+      ctx.fillText(label, x, y + radius + (compact ? 13 : 16) * ratio);
+    }
+  });
+}
+
+function startHubCanvas() {
+  if (hubCanvasFrame) window.cancelAnimationFrame(hubCanvasFrame);
+  const tick = () => {
+    hubCanvasPhase += 1;
+    drawHubCanvas();
+    hubCanvasFrame = window.requestAnimationFrame(tick);
+  };
+  tick();
+}
+
+function pickHubNode(event) {
+  if (!currentHub) return;
+  const canvas = byId("hubCanvas");
+  const rect = canvas.getBoundingClientRect();
+  const ratio = window.devicePixelRatio || 1;
+  const pointerX = (event.clientX - rect.left) * ratio;
+  const pointerY = (event.clientY - rect.top) * ratio;
+  let nearest;
+  let nearestDistance = Number.POSITIVE_INFINITY;
+  currentHub.nodes.forEach((node) => {
+    const dx = node.x * canvas.width - pointerX;
+    const dy = node.y * canvas.height - pointerY;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    const target = Math.max(18, node.radius * ratio * 1.9);
+    if (distance < target && distance < nearestDistance) {
+      nearest = node;
+      nearestDistance = distance;
+    }
+  });
+  if (!nearest) return;
+  selectedHubNodeId = nearest.id;
+  renderHubNodeDetail(nearest);
+  drawHubCanvas();
+}
+
 function renderDirectory(directory, syncInput = false) {
   const tableBody = byId("directoryTableBody");
   if (!tableBody) return;
@@ -888,12 +1414,14 @@ if (typeof document !== "undefined") {
   let currentPack;
 
   function showView(view) {
-    const validView = ["workspace", "directory", "field", "review"].includes(view) ? view : "workspace";
+    const validView = ["workspace", "hub", "directory", "field", "review"].includes(view) ? view : "workspace";
     document.querySelectorAll(".tab").forEach((tab) => tab.classList.toggle("is-active", tab.dataset.view === validView));
     byId("workspace").hidden = validView !== "workspace";
+    byId("hub").hidden = validView !== "hub";
     byId("directory").hidden = validView !== "directory";
     byId("field").hidden = validView !== "field";
     byId("review").hidden = validView !== "review";
+    if (validView === "hub") window.setTimeout(drawHubCanvas, 40);
   }
 
   document.querySelectorAll(".tab").forEach((button) => {
@@ -930,6 +1458,52 @@ if (typeof document !== "undefined") {
     }
   });
 
+  function buildHubFromInput() {
+    currentPack = currentPack || buildActionPack(getInput(), activeResourceDirectory);
+    const hub = buildIdeaConstellation({ ideaText: byId("hubIdeaInput").value }, currentPack);
+    renderHub(hub);
+    return hub;
+  }
+
+  byId("seedHubBtn").addEventListener("click", () => {
+    currentPack = currentPack || buildActionPack(getInput(), activeResourceDirectory);
+    byId("hubIdeaInput").value = hubSeedFromPack(currentPack);
+    buildHubFromInput();
+    showToast("AidBridge constellation loaded");
+  });
+
+  byId("buildHubBtn").addEventListener("click", () => {
+    buildHubFromInput();
+    showToast("Constellation built");
+  });
+
+  byId("hubCanvas").addEventListener("click", pickHubNode);
+  byId("hubCanvas").addEventListener("mousemove", (event) => {
+    const canvas = byId("hubCanvas");
+    const rect = canvas.getBoundingClientRect();
+    const ratio = window.devicePixelRatio || 1;
+    const pointerX = (event.clientX - rect.left) * ratio;
+    const pointerY = (event.clientY - rect.top) * ratio;
+    const hovering = currentHub?.nodes.some((node) => {
+      const dx = node.x * canvas.width - pointerX;
+      const dy = node.y * canvas.height - pointerY;
+      return Math.sqrt(dx * dx + dy * dy) < Math.max(18, node.radius * ratio * 1.9);
+    });
+    canvas.style.cursor = hovering ? "pointer" : "crosshair";
+  });
+
+  byId("copyHubGuideBtn").addEventListener("click", async () => {
+    const hub = currentHub || buildHubFromInput();
+    await navigator.clipboard.writeText(formatHubGuide(hub));
+    showToast("Hub guide copied");
+  });
+
+  byId("copyHubJsonBtn").addEventListener("click", async () => {
+    const hub = currentHub || buildHubFromInput();
+    await navigator.clipboard.writeText(JSON.stringify(hub, null, 2));
+    showToast("Hub JSON copied");
+  });
+
   byId("copyEvaluationBtn").addEventListener("click", async () => {
     currentPack = currentPack || buildActionPack(getInput(), activeResourceDirectory);
     await navigator.clipboard.writeText(currentPack.evaluationJson);
@@ -961,6 +1535,54 @@ if (typeof document !== "undefined") {
 
   renderDirectory(activeResourceDirectory, true);
   currentPack = loadSample(0);
+  byId("hubIdeaInput").value = hubSeedFromPack(currentPack);
+  renderHub(buildIdeaConstellation({ ideaText: byId("hubIdeaInput").value }, currentPack));
+  window.addEventListener("resize", drawHubCanvas);
+  window.addEventListener("aidbridge:codex-idea", (event) => {
+    const payload = event.detail || {};
+    const ideaText = typeof payload === "string" ? payload : payload.ideaText || payload.text || HUB_DEFAULT_IDEA;
+    byId("hubIdeaInput").value = ideaText;
+    if (payload.caseInput) {
+      byId("caseInput").value = payload.caseInput;
+      currentPack = buildActionPack(getInput(), activeResourceDirectory);
+      renderPack(currentPack);
+    }
+    const hub = buildHubFromInput();
+    if (payload.showHub !== false) showView("hub");
+    return hub;
+  });
+  const aidBridgeCodex = {
+    version: "aidbridge-codex-bridge-2026-06-05",
+    buildActionPack,
+    buildIdeaConstellation,
+    getCurrentHub: () => currentHub,
+    setIdeaText: (ideaText) => {
+      byId("hubIdeaInput").value = String(ideaText || "");
+      return byId("hubIdeaInput").value;
+    },
+    buildFromIdea: (ideaText, options = {}) => {
+      if (ideaText !== undefined) byId("hubIdeaInput").value = String(ideaText || "");
+      const pack = options.pack || currentPack || buildActionPack(getInput(), activeResourceDirectory);
+      const hub = buildIdeaConstellation({ ideaText: byId("hubIdeaInput").value }, pack);
+      if (options.render !== false) renderHub(hub);
+      return hub;
+    },
+    importCodexContext: (payload = {}) => {
+      const ideaText = payload.ideaText || payload.text || byId("hubIdeaInput").value || HUB_DEFAULT_IDEA;
+      byId("hubIdeaInput").value = ideaText;
+      if (payload.caseInput) byId("caseInput").value = payload.caseInput;
+      currentPack = buildActionPack(getInput(), activeResourceDirectory);
+      renderPack(currentPack);
+      const hub = buildIdeaConstellation({ ideaText }, currentPack);
+      renderHub(hub);
+      return hub;
+    }
+  };
+  window.AidBridgeCodex = aidBridgeCodex;
+  globalThis.AidBridgeCodex = aidBridgeCodex;
+  document.documentElement.dataset.codexBridge = "ready";
+  document.documentElement.dataset.hubNodes = String(currentHub?.nodes?.length || 0);
+  window.dispatchEvent(new CustomEvent("aidbridge:hub-ready", { detail: aidBridgeCodex }));
   const params = new URLSearchParams(window.location.search);
   const requestedView = params.get("view") || window.location.hash.replace("#", "");
   showView(requestedView);

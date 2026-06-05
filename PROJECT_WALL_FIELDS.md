@@ -20,6 +20,8 @@ AidBridge helps frontline volunteers, school counsellors, NGOs, and mutual-aid t
 
 The pack includes a first response, risk and confidence score, detected needs, a next-60-minute action plan, a privacy-safe redacted brief, trusted resource matches, resource-routing guidance, an evidence ledger, a follow-up clock, and a human handoff script. The live Crisis Map visualizes every case from intake signal to need radar, resource route, evidence lock, and human handoff, making the workflow understandable at a glance. Its Play Flow tour can auto-walk judges through the path during a short demo. Teams can also paste a local CSV resource directory and immediately rerun matching against their own verified services. The Judge Lens view runs a live case-quality audit across safety, privacy, evidence, resource fit, handoff clarity, and field readiness, then exports machine-readable JSON for review. The Impact Lens estimates the operational outcome: manual baseline minutes, AidBridge run minutes, time saved, privacy signals, and resource routes. The repo also includes a four-scenario benchmark report with 4/4 passing cases, average audit score 100, average operator minutes saved 47, and 100% redaction pass rate. The current demo runs entirely in the browser with a deterministic triage engine so the product is testable without accounts, API keys, or a backend. The architecture is designed to upgrade cleanly into LLM extraction, retrieval over verified local service directories, privacy review, and human-in-the-loop ownership.
 
+New final-stage addition: AidBridge now includes a Hackathon Constellation Hub. A judge or builder can paste a full hackathon idea dump, and the Hub automatically turns it into a visual star map of problem signals, beneficiaries, AI layers, data sources, safety guardrails, visual demo hooks, evaluation proof, and submission artifacts. Clicking nodes reveals the strongest path from raw idea to Project Wall-ready output. The Hub also generates guided filling fields for the Project Wall and exposes a static Codex bridge API through `window.AidBridgeCodex`, browser events, and `api/codex-bridge.mjs`, allowing Codex or another agent to inject idea text and read the generated constellation payload.
+
 AidBridge is built for AI for Good and AI for All: it makes crisis-adjacent support safer for non-experts, lowers the training burden for community teams, and creates consistent evidence records before a case is handed off.
 
 ## Demo URL
@@ -37,11 +39,16 @@ https://github.com/wangsiyi7/aidbridge-ucws-2026
 - JavaScript ES modules
 - Deterministic triage/risk-scoring engine
 - Dynamic Crisis Map visualization
+- Hackathon Constellation Hub canvas visualization
+- Guided Project Wall field builder
 - Privacy redaction layer
 - Resource matching directory
 - Local CSV directory importer
 - Case-quality audit engine
 - Impact/outcome estimation layer
+- Static Codex bridge API
+- Browser CustomEvent integration
+- ES module API in `api/codex-bridge.mjs`
 - Machine-readable evaluation JSON
 - Four-scenario benchmark harness
 - GitHub Pages branch deployment
@@ -56,6 +63,12 @@ Optional stronger judge-focused screenshot:
 
 ```text
 assets/screenshot-judge.png
+```
+
+Final-stage visual Hub screenshot:
+
+```text
+assets/screenshot-hub.png
 ```
 
 ## Team Members
@@ -103,5 +116,6 @@ Current benchmark summary: 4/4 cases passed, average audit score 100, average op
 
 - Social card: `assets/social-card.svg`
 - Judge Lens screenshot: `assets/screenshot-judge.png`
+- Constellation Hub screenshot: `assets/screenshot-hub.png`
 - Community vote copy: `COMMUNITY_VOTE_KIT.md`
 - Safety stance: `ETHICS_AND_SAFETY.md`

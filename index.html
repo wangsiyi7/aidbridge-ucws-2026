@@ -36,6 +36,7 @@
         </a>
         <nav class="nav-tabs" aria-label="Workspace views">
           <button class="tab is-active" data-view="workspace">Workspace</button>
+          <button class="tab" data-view="hub">Hub</button>
           <button class="tab" data-view="directory">Directory</button>
           <button class="tab" data-view="field">Field Pack</button>
           <button class="tab" data-view="review">Judge Lens</button>
@@ -229,6 +230,76 @@
           </section>
         </aside>
       </main>
+
+      <section id="hub" class="view-panel hub-view" hidden>
+        <div class="hub-shell">
+          <section class="hub-stage" aria-labelledby="hubTitle">
+            <div class="hub-stage-head">
+              <div>
+                <p class="eyebrow">Constellation Hub</p>
+                <h2 id="hubTitle">Hackathon idea star map</h2>
+              </div>
+              <div class="hub-actions">
+                <button id="seedHubBtn" class="hub-button" type="button">Use AidBridge</button>
+                <button id="buildHubBtn" class="hub-button primary" type="button">Build Stars</button>
+              </div>
+            </div>
+
+            <textarea
+              id="hubIdeaInput"
+              class="hub-idea-input"
+              spellcheck="true"
+              aria-label="Hackathon idea input"
+            ></textarea>
+
+            <div class="hub-map-wrap">
+              <canvas id="hubCanvas" class="hub-canvas" width="980" height="620" aria-label="Hackathon idea constellation"></canvas>
+              <div class="hub-map-hud" aria-label="Constellation metrics">
+                <span><strong id="hubNodeCount">--</strong> nodes</span>
+                <span><strong id="hubEdgeCount">--</strong> links</span>
+                <span><strong id="hubReadiness">--</strong> ready</span>
+              </div>
+            </div>
+
+            <div class="hub-legend" aria-label="Node legend">
+              <span><i class="legend-core"></i>Project core</span>
+              <span><i class="legend-user"></i>User signal</span>
+              <span><i class="legend-system"></i>System layer</span>
+              <span><i class="legend-artifact"></i>Submission artifact</span>
+            </div>
+          </section>
+
+          <aside class="hub-console" aria-label="Hub control console">
+            <section class="hub-console-section">
+              <p class="eyebrow">Selected node</p>
+              <h3 id="hubNodeTitle">Project core</h3>
+              <p id="hubNodeDetail">Build a constellation to inspect the strongest submission path.</p>
+            </section>
+
+            <section class="hub-console-section">
+              <div class="hub-console-head">
+                <div>
+                  <p class="eyebrow">Guided filling</p>
+                  <h3>Project Wall path</h3>
+                </div>
+                <button id="copyHubGuideBtn" class="hub-copy" type="button">Copy Guide</button>
+              </div>
+              <ol id="hubGuidanceList" class="hub-guidance-list"></ol>
+            </section>
+
+            <section class="hub-console-section">
+              <div class="hub-console-head">
+                <div>
+                  <p class="eyebrow">Codex bridge</p>
+                  <h3>Released API payload</h3>
+                </div>
+                <button id="copyHubJsonBtn" class="hub-copy" type="button">Copy JSON</button>
+              </div>
+              <pre id="hubJsonOutput" class="hub-json-output"></pre>
+            </section>
+          </aside>
+        </div>
+      </section>
 
       <section id="field" class="view-panel" hidden>
         <div class="view-inner">

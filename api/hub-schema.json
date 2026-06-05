@@ -1,0 +1,67 @@
+{
+  "name": "AidBridge Hackathon Constellation Hub API",
+  "version": "aidbridge-hub-2026-06-05",
+  "deployment": "static-github-pages",
+  "browserGlobal": "window.AidBridgeCodex",
+  "module": "./api/codex-bridge.mjs",
+  "events": {
+    "ready": "aidbridge:hub-ready",
+    "input": "aidbridge:codex-idea",
+    "output": "aidbridge:hub-built"
+  },
+  "methods": {
+    "buildIdeaConstellation": {
+      "input": {
+        "ideaText": "string"
+      },
+      "output": "Constellation payload with projectName, readiness, nodes, edges, guidance, and codexBridge metadata."
+    },
+    "buildFromIdea": {
+      "input": {
+        "ideaText": "string",
+        "options": {
+          "render": "boolean"
+        }
+      },
+      "output": "Rendered or headless constellation payload."
+    },
+    "getCurrentHub": {
+      "input": {},
+      "output": "Most recent constellation payload rendered in the browser."
+    },
+    "importCodexContext": {
+      "input": {
+        "ideaText": "string",
+        "caseInput": "string",
+        "location": "string",
+        "channel": "string",
+        "language": "string",
+        "mode": "string"
+      },
+      "output": "Action pack plus refreshed constellation state."
+    }
+  },
+  "nodeShape": {
+    "id": "string",
+    "label": "string",
+    "type": "core | dimension | idea | artifact",
+    "group": "project | user | system | artifact",
+    "color": "hex color",
+    "x": "0..1 normalized canvas coordinate",
+    "y": "0..1 normalized canvas coordinate",
+    "radius": "number",
+    "score": "number",
+    "detail": "string"
+  },
+  "edgeShape": {
+    "from": "node id",
+    "to": "node id",
+    "strength": "0..1",
+    "reason": "string"
+  },
+  "example": {
+    "browser": "window.AidBridgeCodex.buildFromIdea('AidBridge: turn messy urgent help requests into safe action packs and a Project Wall-ready star map')",
+    "event": "window.dispatchEvent(new CustomEvent('aidbridge:codex-idea', { detail: { ideaText: 'New UCWS idea text', showHub: true } }))",
+    "module": "import { buildCodexHub } from './api/codex-bridge.mjs'; const hub = buildCodexHub({ ideaText: 'New UCWS idea text' });"
+  }
+}

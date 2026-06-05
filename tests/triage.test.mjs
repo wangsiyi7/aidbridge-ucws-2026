@@ -3,6 +3,7 @@ import {
   auditActionPack,
   buildActionPack,
   buildFlowMap,
+  buildIdeaConstellation,
   detectNeeds,
   directoryToCsv,
   estimateImpact,
@@ -87,5 +88,17 @@ assert.equal(evaluation.detectedNeeds.length, pack.needs.length, "evaluation JSO
 assert.equal(evaluation.impact.minutesSaved, pack.impact.minutesSaved, "evaluation JSON includes impact estimate");
 assert.equal(evaluation.flow.nodes.length, pack.flow.nodes.length, "evaluation JSON includes crisis map");
 assert.ok(evaluation.flow.nodes[0].detail.includes("Incoming"), "evaluation JSON includes flow detail");
+
+const hub = buildIdeaConstellation([
+  "AidBridge: visual UCWS hub for community-aid hackathon submission.",
+  "Problem: volunteers need safe triage, privacy, evidence, resources, and Project Wall guidance.",
+  "AI layer: Codex can inject ideas and read the generated star-map API payload."
+].join("\n"), pack);
+assert.ok(hub.nodes.length >= 12, "builds constellation nodes");
+assert.ok(hub.edges.length >= 10, "builds constellation edges");
+assert.ok(hub.nodes.some((node) => node.type === "artifact" && node.label.includes("Codex")), "adds Codex bridge artifact node");
+assert.ok(hub.guidance.guidedSteps.some((step) => step.label === "Description"), "adds guided submission description");
+assert.equal(hub.codexBridge.browserGlobal, "window.AidBridgeCodex", "documents browser bridge API");
+assert.ok(hub.readiness >= 90, "scores final hub as submission-ready");
 
 console.log("AidBridge triage tests passed.");

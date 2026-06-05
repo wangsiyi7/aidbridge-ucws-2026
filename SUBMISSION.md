@@ -13,6 +13,9 @@
 - Chinese final submission playbook: `FINAL_SUBMISSION_PLAYBOOK_CN.md`
 - Privacy redaction, resource matching, and follow-up clock built into the demo
 - Interactive Crisis Map workflow visualization built into the demo
+- Hackathon Constellation Hub built into the demo for idea-to-submission star-map visualization
+- Guided Project Wall field builder built into the Hub
+- Static Codex bridge API: `window.AidBridgeCodex`, `api/codex-bridge.mjs`, and `api/hub-schema.json`
 - Local CSV resource-directory import built into the demo
 - Judge Lens case-quality audit and JSON export built into the demo
 - Impact Lens outcome estimate built into the demo
@@ -23,6 +26,7 @@
 - Demo script: `DEMO_SCRIPT.md`
 - Judge Q&A: `JUDGE_QA.md`
 - Editable pitch deck: `assets/AidBridge_UCWS_Pitch.pptx`
+- Hub screenshots: `assets/screenshot-hub.png`, `assets/screenshot-hub-mobile.png`
 - Ethics and safety note: `ETHICS_AND_SAFETY.md`
 - Community vote copy: `COMMUNITY_VOTE_KIT.md`
 - Social card: `assets/social-card.svg`
@@ -67,10 +71,12 @@ Avoid overclaiming:
 1. Load the migrant worker sample.
 2. Show detected Medical care and Legal or work rights.
 3. Show urgent score, interactive Crisis Map, redacted brief, matched resources, and evidence ledger.
-4. Click Directory, apply a custom CSV, and show matching changes.
-5. Click Judge Lens and show the 100/100 case-quality audit, Impact Lens, and JSON export.
-6. Click Field Pack.
-7. Copy the pack and explain how it fits WhatsApp, NGO CRM, or helpdesk notes.
+4. Click Hub and show the Hackathon Constellation star map generated from the AidBridge idea seed.
+5. Paste a new UCWS idea sentence, click Build Stars, then click a node and show the guided Project Wall fields plus Codex bridge JSON.
+6. Click Directory, apply a custom CSV, and show matching changes.
+7. Click Judge Lens and show the 100/100 case-quality audit, Impact Lens, and JSON export.
+8. Click Field Pack.
+9. Copy the pack and explain how it fits WhatsApp, NGO CRM, or helpdesk notes.
 
 ## What Still Needs External User Action
 

@@ -20,6 +20,8 @@ AidBridge creates a structured aid plan in seconds:
 - Detects urgent needs across medical, shelter, food, legal/work-rights, mental health, safeguarding, and document-access categories.
 - Scores risk and confidence with a deterministic triage engine.
 - Visualizes every case as an interactive Crisis Map from intake signal to human handoff, with a Play Flow tour for demos.
+- Adds a Hackathon Constellation Hub inspired by code graph dashboards: paste any UCWS idea and it turns the concept into a visual star map of user signals, AI layers, data sources, safety guardrails, evaluation proof, and submission artifacts.
+- Guides Project Wall filling from the Hub by generating title, tagline, description, demo/repo proof, screenshot guidance, missing human fields, and next actions.
 - Produces a first response, next-60-minute plan, evidence ledger, and human handoff script.
 - Redacts phone numbers, emails, document IDs, and sensitive location fragments before export.
 - Matches the case against a demo directory of trusted community resources with fit reasons, language fit, urgency fit, and trust score.
@@ -28,6 +30,7 @@ AidBridge creates a structured aid plan in seconds:
 - Runs a live case-quality audit for safety, privacy, evidence, resource fit, handoff clarity, and field readiness.
 - Estimates operational impact: manual baseline minutes, AidBridge run minutes, time saved, privacy signals, and resource routes.
 - Exports machine-readable evaluation JSON so judges or automated reviewers can inspect the product output.
+- Releases a static Codex bridge API through `window.AidBridgeCodex`, browser events, and `api/codex-bridge.mjs` so Codex or other scripts can inject ideas and read the generated constellation payload.
 - Exports a one-page field pack that can be pasted into an NGO case note, volunteer chat, or helpdesk record.
 
 The demo works fully offline in the browser. The engine is deterministic by design so judges can verify behavior through tests. The schema can later support LLM extraction, retrieval over real local service directories, privacy review, and human case ownership.
@@ -75,6 +78,27 @@ node tests/triage.test.mjs
 node benchmarks/run.mjs
 ```
 
+## Codex Bridge API
+
+AidBridge is still deployable as static files, but the Hub exposes a browser and module API:
+
+```js
+window.AidBridgeCodex.buildFromIdea("AidBridge: visual hub for UCWS ideas and Project Wall guidance");
+window.dispatchEvent(new CustomEvent("aidbridge:codex-idea", {
+  detail: { ideaText: "New hackathon idea", showHub: true }
+}));
+```
+
+Headless/static import:
+
+```js
+import { buildCodexHub } from "./api/codex-bridge.mjs";
+
+const hub = buildCodexHub({ ideaText: "New UCWS idea" });
+```
+
+The contract is documented in `api/hub-schema.json`.
+
 ## Project Structure
 
 ```text
@@ -93,8 +117,12 @@ aidbridge/
   assets/screenshot.png      Desktop app screenshot
   assets/screenshot-mobile.png
   assets/screenshot-judge.png
+  assets/screenshot-hub.png
+  assets/screenshot-hub-mobile.png
   assets/evaluation-report.json
   assets/AidBridge_UCWS_Pitch.pptx
+  api/codex-bridge.mjs       Static ES module API for Codex/agent handoff
+  api/hub-schema.json        Constellation Hub payload contract
   tests/triage.test.mjs      Deterministic engine tests
   tools/serve.mjs            Tiny static server
   AI_NATIVE_ARCHITECTURE.md  LLM/RAG/DeepResearch upgrade path
