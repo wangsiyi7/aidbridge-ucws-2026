@@ -51,7 +51,7 @@ To be filled after pushing the `aidbridge/` directory to GitHub.
 - Impact/outcome estimation layer
 - Machine-readable evaluation JSON
 - Four-scenario benchmark harness
-- GitHub Pages deployment workflow
+- GitHub Pages branch deployment
 - Browser Clipboard API
 - Node-based test file for the core engine
 

@@ -81,7 +81,6 @@ aidbridge/
   app.js                     Triage, redaction, resource matching, and UI binding
   benchmarks/run.mjs         Deterministic scenario benchmark
   LICENSE                    MIT license
-  .github/workflows/pages.yml
   vercel.json                Vercel static deployment config
   netlify.toml               Netlify static deployment config
   site.webmanifest           PWA/share metadata

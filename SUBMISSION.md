@@ -28,7 +28,7 @@
 - Social card: `assets/social-card.svg`
 - Vercel config: `vercel.json`
 - Netlify config: `netlify.toml`
-- GitHub Pages workflow: `.github/workflows/pages.yml`
+- GitHub Pages branch deployment config: `.nojekyll`
 - Competitive strategy: `HACKATHON_STRATEGY.md`
 - Research notes: `COMPETITOR_RESEARCH.md`
 

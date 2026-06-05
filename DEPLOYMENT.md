@@ -6,15 +6,8 @@ AidBridge is a static app. Deploy the `aidbridge/` directory as the site root.
 
 1. Push the `aidbridge/` directory to a GitHub repository.
 2. Enable Pages for the repository.
-3. Recommended: set Pages source to GitHub Actions.
-4. The included `.github/workflows/pages.yml` workflow runs `npm run verify`, uploads the static site, and deploys it.
-5. Use the Pages URL as the UCWS Demo URL.
-
-Alternative manual mode:
-
-1. Enable Pages for the repository.
-2. Set the publishing source to the `main` branch root.
-3. Use the Pages URL as the UCWS Demo URL.
+3. Set the publishing source to the `main` branch root.
+4. Use the Pages URL as the UCWS Demo URL.
 
 The `.nojekyll` file is included so GitHub Pages serves static assets directly.
 

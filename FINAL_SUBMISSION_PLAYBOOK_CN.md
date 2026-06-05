@@ -43,7 +43,7 @@ tests/triage.test.mjs
 benchmarks/run.mjs
 EVALUATION_REPORT.md
 assets/screenshot-judge.png
-.github/workflows/pages.yml
+.nojekyll
 ```
 
 ### 2. 部署 Demo
@@ -54,8 +54,8 @@ assets/screenshot-judge.png
 
 1. 打开仓库 Settings
 2. 打开 Pages
-3. Source 选择 GitHub Actions
-4. 等 Actions 完成
+3. Source 选择 Deploy from a branch
+4. Branch 选择 `main`，folder 选择 `/ (root)`
 5. 复制 Pages URL
 
 ### 3. 填 Project Wall
