@@ -6,6 +6,7 @@ import {
   buildIdeaConstellation,
   buildOpsDesk,
   buildSingaporeLaunchPlan,
+  buildSurgeLab,
   detectNeeds,
   directoryToCsv,
   estimateImpact,
@@ -16,6 +17,11 @@ import {
   redactSensitiveInfo,
   scoreCase
 } from "../app.js";
+import {
+  buildActionPackRecord,
+  buildOpsDeskRecord,
+  normalizeSupabaseConfig
+} from "../api/supabase-client.mjs";
 
 const caseText = "Employer kept passport, no salary, fever, and he is scared police will come tonight.";
 
@@ -116,5 +122,25 @@ assert.ok(ops.metrics.minutesSaved > pack.impact.minutesSaved, "rolls up multi-c
 assert.equal(ops.queue[0].urgency >= ops.queue[1].urgency, true, "sorts queue by urgency");
 assert.ok(ops.resourceLoad.length > 0, "computes resource load");
 assert.ok(ops.opsBrief.includes("AIDBRIDGE OPS DESK"), "exports copy-ready ops brief");
+
+const surge = buildSurgeLab("worker-dorm-night");
+assert.equal(surge.metrics.casesAdded, 4, "adds scenario cases to surge lab");
+assert.ok(surge.metrics.totalCases > ops.metrics.openCases, "surge lab expands the operations queue");
+assert.ok(surge.metrics.criticalCases >= ops.metrics.criticalCases, "surge lab preserves critical priority");
+assert.ok(surge.firstMoves.length >= 4, "surge lab produces first moves");
+assert.ok(surge.brief.includes("AIDBRIDGE SURGE LAB"), "exports copy-ready surge brief");
+assert.ok(surge.scenario.judgeAngle.includes("Singapore"), "frames surge with Singapore judge angle");
+
+const normalizedSupabase = normalizeSupabaseConfig({
+  url: "https://example.supabase.co/",
+  anonKey: "anon-key"
+});
+assert.equal(normalizedSupabase.url, "https://example.supabase.co", "normalizes Supabase URL");
+const packRecord = buildActionPackRecord(pack);
+assert.equal(packRecord.urgency, pack.score.urgency, "builds Supabase action-pack record");
+assert.ok(packRecord.evaluation.project === "AidBridge", "stores evaluation JSON in Supabase record");
+const opsRecord = buildOpsDeskRecord(ops);
+assert.equal(opsRecord.open_cases, ops.metrics.openCases, "builds Supabase ops record");
+assert.ok(opsRecord.queue.length >= 4, "stores ops queue in Supabase record");
 
 console.log("AidBridge triage tests passed.");

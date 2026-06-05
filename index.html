@@ -275,12 +275,85 @@
               <div id="opsResourceLoad" class="ops-resource-load"></div>
             </section>
           </div>
+          <section class="ops-panel surge-panel" aria-labelledby="surgeTitle">
+            <div class="ops-panel-head">
+              <div>
+                <p class="eyebrow">Singapore Surge Lab</p>
+                <h3 id="surgeTitle">Stress-test the duty desk</h3>
+              </div>
+              <button id="copySurgeBriefBtn" class="icon-button" type="button">Copy Surge Brief</button>
+            </div>
+            <div class="surge-controls">
+              <label>
+                <span>Stress scenario</span>
+                <select id="surgeScenarioInput"></select>
+              </label>
+              <button id="runSurgeBtn" class="primary-button" type="button">Run Surge</button>
+            </div>
+            <div class="surge-metrics" aria-label="Surge metrics">
+              <div>
+                <span>Total cases</span>
+                <strong id="surgeTotalCases">--</strong>
+              </div>
+              <div>
+                <span>Critical cases</span>
+                <strong id="surgeCriticalCases">--</strong>
+              </div>
+              <div>
+                <span>Top pressure</span>
+                <strong id="surgeTopPressure">--</strong>
+              </div>
+              <div>
+                <span>SLA risk</span>
+                <strong id="surgeSlaRisk">--</strong>
+              </div>
+            </div>
+            <div class="surge-layout">
+              <div>
+                <p class="eyebrow">First moves</p>
+                <ol id="surgeMoves" class="surge-list"></ol>
+              </div>
+              <div>
+                <p class="eyebrow">Pressure preview</p>
+                <div id="surgeResourcePreview" class="surge-resource-preview"></div>
+              </div>
+            </div>
+            <pre id="surgeBrief" class="ops-brief surge-brief"></pre>
+          </section>
           <section class="ops-panel" aria-labelledby="opsBriefTitle">
             <div class="ops-panel-head">
               <p class="eyebrow">Command Brief</p>
               <h3 id="opsBriefTitle">What the duty lead should do next</h3>
             </div>
             <pre id="opsBrief" class="ops-brief"></pre>
+          </section>
+          <section class="ops-panel backend-panel" aria-labelledby="backendTitle">
+            <div class="ops-panel-head">
+              <div>
+                <p class="eyebrow">Supabase Backend Sync</p>
+                <h3 id="backendTitle">Persist action packs and ops snapshots</h3>
+              </div>
+              <span id="backendStatus" class="backend-status">Local only</span>
+            </div>
+            <div class="backend-grid">
+              <label>
+                <span>Project URL</span>
+                <input id="supabaseUrlInput" placeholder="https://your-project.supabase.co" />
+              </label>
+              <label>
+                <span>Anon public key</span>
+                <input id="supabaseAnonKeyInput" type="password" placeholder="eyJ..." />
+              </label>
+            </div>
+            <div class="backend-actions">
+              <button id="saveBackendBtn" class="primary-button" type="button">Save Backend</button>
+              <button id="clearBackendBtn" class="icon-button" type="button">Clear</button>
+              <button id="syncPackBtn" class="icon-button" type="button">Sync Pack</button>
+              <button id="syncOpsBtn" class="icon-button" type="button">Sync Ops</button>
+              <button id="loadRecentBackendBtn" class="icon-button" type="button">Load Recent</button>
+            </div>
+            <p id="backendMessage" class="backend-message"></p>
+            <div id="backendRecent" class="backend-recent"></div>
           </section>
         </div>
       </section>

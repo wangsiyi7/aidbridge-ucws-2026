@@ -2,17 +2,34 @@ import {
   buildActionPack,
   buildIdeaConstellation,
   buildOpsDesk,
+  buildSurgeLab,
   directoryToCsv,
   parseResourceCsv
 } from "../app.js";
+import {
+  buildActionPackRecord,
+  buildOpsDeskRecord,
+  fetchRecentSupabaseRecords,
+  syncActionPackToSupabase,
+  syncOpsDeskToSupabase
+} from "./supabase-client.mjs";
+
+export {
+  buildActionPackRecord,
+  buildOpsDeskRecord,
+  fetchRecentSupabaseRecords,
+  syncActionPackToSupabase,
+  syncOpsDeskToSupabase
+} from "./supabase-client.mjs";
 
 export {
   buildActionPack,
   buildIdeaConstellation,
   buildOpsDesk,
+  buildSurgeLab,
   directoryToCsv,
   parseResourceCsv
-};
+} from "../app.js";
 
 export const CODEX_BRIDGE_SCHEMA = {
   name: "AidBridge Codex Bridge",
@@ -27,6 +44,10 @@ export const CODEX_BRIDGE_SCHEMA = {
     "buildCodexHub",
     "buildIdeaConstellation",
     "buildOpsDesk",
+    "buildSurgeLab",
+    "syncActionPackToSupabase",
+    "syncOpsDeskToSupabase",
+    "fetchRecentSupabaseRecords",
     "buildActionPack",
     "directoryToCsv",
     "parseResourceCsv"

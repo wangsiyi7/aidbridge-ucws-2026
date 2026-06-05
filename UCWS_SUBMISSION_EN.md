@@ -32,7 +32,7 @@ https://github.com/wangsiyi7/aidbridge-ucws-2026
 
 ## 6. Short Description
 
-AidBridge helps frontline volunteers, school counsellors, NGOs, and mutual-aid teams turn messy WhatsApp, hotline, walk-in, or email help requests into safe, field-ready action packs. It generates risk scores, detected needs, privacy-safe summaries, trusted resource matches, evidence notes, follow-up clocks, and human handoff scripts. The new Ops Desk turns multiple active cases into a duty queue, sorts priority by urgency, watches resource pressure, rolls up minutes saved, and exports a copy-ready command brief for the duty lead.
+AidBridge helps frontline volunteers, school counsellors, NGOs, and mutual-aid teams turn messy WhatsApp, hotline, walk-in, or email help requests into safe, field-ready action packs. It generates risk scores, detected needs, privacy-safe summaries, trusted resource matches, evidence notes, follow-up clocks, and human handoff scripts. The new Ops Desk turns multiple active cases into a duty queue, sorts priority by urgency, watches resource pressure, rolls up minutes saved, and exports a copy-ready command brief for the duty lead. Its Singapore Surge Lab stress-tests migrant-worker, school-care, family-aid, and document-access spikes so judges can see how the system behaves when the night gets worse. Ops Desk now includes optional Supabase Backend Sync so teams can persist action packs and operations snapshots with a Supabase project URL and anon key.
 
 The final-stage Hackathon Constellation Hub lets a judge or builder paste any UCWS idea and automatically turn it into a visual star map, Project Wall guidance, and a Codex bridge API payload.
 
@@ -45,6 +45,8 @@ Most chatbot demos stop at a generated answer. AidBridge is built as an operatin
 - Safe first response
 - Urgency and confidence score
 - Ops Desk multi-case queue and resource-pressure view
+- Singapore Surge Lab stress scenarios
+- Supabase Backend Sync for persistence
 - Detected need categories
 - Next-60-minute action plan
 - Privacy-safe redacted summary
@@ -97,12 +99,15 @@ Core workflow:
 8. Copy the one-page Field Pack.
 9. Use the Hub to convert project ideas into constellation nodes, Project Wall guidance, and Codex API JSON.
 10. Use Ops Desk to inspect the multi-case queue, resource load, bottlenecks, and duty-lead brief.
+11. Run Singapore Surge Lab to show a pressure scenario and copy the first-move surge brief.
 
 ## 10. Key Features
 
 - Multilingual aid triage for messy help requests
 - Deterministic urgency and confidence scoring
 - Ops Desk for batch case triage, priority sorting, resource pressure, and duty-lead briefs
+- Singapore Surge Lab for migrant-worker, school-care, family-aid, and document-access stress tests
+- Supabase Backend Sync for action packs and Ops Desk snapshots
 - Need detection for medical care, shelter, food access, legal/work rights, mental health, safeguarding, documents, and access
 - Interactive Crisis Map visualization
 - Play Flow auto-tour for judge demos
@@ -128,6 +133,8 @@ Core workflow:
 - Canvas 2D visualization
 - Deterministic triage and risk-scoring engine
 - Ops Desk multi-case queue and resource-pressure model
+- Singapore Surge Lab stress simulator
+- Supabase REST sync client
 - Keyword and rule-based need detection
 - Privacy redaction layer
 - Resource matching directory
@@ -143,6 +150,7 @@ Core workflow:
 - Node.js test runner
 - Scenario benchmark harness
 - GitHub Pages static deployment
+- Supabase SQL schema and RLS policies
 - Vercel and Netlify static deployment configs
 
 ## 12. API / Codex Bridge

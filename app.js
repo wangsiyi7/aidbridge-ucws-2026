@@ -1,3 +1,13 @@
+import {
+  clearSupabaseConfig,
+  fetchRecentSupabaseRecords,
+  getStoredSupabaseConfig,
+  isSupabaseConfigured,
+  saveSupabaseConfig,
+  syncActionPackToSupabase,
+  syncOpsDeskToSupabase
+} from "./api/supabase-client.mjs";
+
 const NEED_RULES = [
   {
     id: "medical",
@@ -114,6 +124,211 @@ const OPS_DESK_CASES = [
     channel: "Email",
     language: "English",
     mode: "Mutual aid lead"
+  }
+];
+
+export const SURGE_SCENARIOS = [
+  {
+    id: "worker-dorm-night",
+    label: "Dorm fever cluster",
+    thesis: "A migrant-worker desk receives clustered night messages involving fever, room lockouts, withheld documents, and salary threats.",
+    addedCases: [
+      {
+        id: "MW-043",
+        title: "Fever after night shift",
+        owner: "Migrant worker desk",
+        text: "Worker in a crowded dorm has fever and chest pain after night shift. Supervisor says no clinic until tomorrow and his work permit card is with the company office.",
+        location: "Singapore",
+        channel: "WhatsApp",
+        language: "English",
+        mode: "NGO worker"
+      },
+      {
+        id: "MW-044",
+        title: "Salary threat + no food",
+        owner: "Worker-rights lead",
+        text: "Construction worker says salary delayed three months, passport is kept by employer, and he has no money for food tonight. He is afraid of police.",
+        location: "Singapore",
+        channel: "Hotline",
+        language: "Hindi",
+        mode: "NGO worker"
+      },
+      {
+        id: "MW-045",
+        title: "Locked dorm room",
+        owner: "Night shelter lead",
+        text: "Dorm access card stopped working. He is outside with fever, phone battery low, and boss told roommates not to help.",
+        location: "Singapore",
+        channel: "WhatsApp",
+        language: "Mixed",
+        mode: "Community volunteer"
+      },
+      {
+        id: "MW-046",
+        title: "Clinic fear + injury",
+        owner: "Medical route lead",
+        text: "Worker injured hand at site, bleeding through bandage. Employer says he will lose job if he goes hospital. Needs Tamil support.",
+        location: "Singapore",
+        channel: "Walk-in desk",
+        language: "Tamil",
+        mode: "NGO worker"
+      }
+    ],
+    constraints: [
+      "Night routing must separate medical danger from work-rights evidence collection.",
+      "Employer retaliation risk means the first notes need consent, redaction, and proof preservation.",
+      "Language coverage needs English, Hindi, Tamil, and mixed-language handoff paths."
+    ],
+    counterMoves: [
+      "Assign one human owner to medical escalation and one to wage/document evidence.",
+      "Use the resource-pressure view to avoid sending every case to the same desk.",
+      "Create privacy-safe summaries before sharing with partner channels."
+    ],
+    judgeAngle: "Singapore-specific migrant-worker operations edge, not a generic chatbot."
+  },
+  {
+    id: "school-exam-week",
+    label: "Exam-week care surge",
+    thesis: "A school care team receives several privacy-sensitive student messages during exam week involving food, sleep, family conflict, and self-harm signals.",
+    addedCases: [
+      {
+        id: "SC-119",
+        title: "Self-harm note after exam",
+        owner: "School care lead",
+        text: "Student says she failed an exam, has not eaten, is hiding in a stairwell, and wrote that she might hurt herself tonight.",
+        location: "Singapore",
+        channel: "Walk-in desk",
+        language: "English",
+        mode: "School counsellor"
+      },
+      {
+        id: "SC-120",
+        title: "Family conflict + library sleep",
+        owner: "Counsellor backup",
+        text: "Classmate says a minor is sleeping in the library again after family conflict and does not want parents called until someone checks safety.",
+        location: "Singapore",
+        channel: "Email",
+        language: "English",
+        mode: "School counsellor"
+      },
+      {
+        id: "SC-121",
+        title: "No meals + panic",
+        owner: "Student welfare desk",
+        text: "Student reports panic, cannot breathe, no meal since yesterday, and no safe adult available after school.",
+        location: "Singapore",
+        channel: "Hotline",
+        language: "Malay",
+        mode: "School counsellor"
+      }
+    ],
+    constraints: [
+      "Safeguarding must stay human-owned and consent-aware.",
+      "Food and shelter issues cannot wait for academic case review.",
+      "Privacy boundaries are tighter because several cases involve minors."
+    ],
+    counterMoves: [
+      "Prioritize immediate danger checks before academic follow-up.",
+      "Route food and safe-place needs in parallel with counsellor review.",
+      "Use redacted briefs when coordinating with teachers or peer supporters."
+    ],
+    judgeAngle: "Shows a high-trust workflow for schools and youth care teams."
+  },
+  {
+    id: "family-rent-shock",
+    label: "Rent-night family shock",
+    thesis: "A mutual-aid group sees a same-night spike in rent, baby formula, food, and injury requests across family households.",
+    addedCases: [
+      {
+        id: "FR-078",
+        title: "Formula delivery blocked",
+        owner: "Family relay lead",
+        text: "Mother has baby with no milk, rent due tonight, and cannot leave because husband is dizzy after injury.",
+        location: "Singapore",
+        channel: "WhatsApp",
+        language: "Mixed",
+        mode: "Community volunteer"
+      },
+      {
+        id: "FR-079",
+        title: "Groceries + elder care",
+        owner: "Pantry relay lead",
+        text: "Elderly grandfather and two children have no groceries until payday. Caller lost bank card and needs help tonight.",
+        location: "Singapore",
+        channel: "Hotline",
+        language: "Mandarin",
+        mode: "Mutual aid lead"
+      },
+      {
+        id: "FR-080",
+        title: "Eviction warning",
+        owner: "Shelter route lead",
+        text: "Family says landlord threatened lockout tonight, child is sick with fever, and they need a safe room or emergency groceries.",
+        location: "Singapore",
+        channel: "Email",
+        language: "English",
+        mode: "Mutual aid lead"
+      }
+    ],
+    constraints: [
+      "Delivery, shelter, food, and child safeguarding routes compete for the same volunteer hours.",
+      "The first hour needs practical routing, not long-form case management.",
+      "Evidence must be enough for handoff without exposing exact room identifiers."
+    ],
+    counterMoves: [
+      "Split baby formula and shelter routing into two owners.",
+      "Use the first matched resource for immediate essentials, then open case management.",
+      "Copy the surge brief into the team chat before assigning low-risk follow-up."
+    ],
+    judgeAngle: "Makes community-aid logistics concrete and visibly operational."
+  },
+  {
+    id: "documents-outage",
+    label: "Documents access outage",
+    thesis: "A helpdesk sees many lower-urgency document, SIM, bank-card, and salary-access cases that can bury urgent messages if the queue is not sorted.",
+    addedCases: [
+      {
+        id: "DO-205",
+        title: "SIM + bank locked",
+        owner: "Document navigator",
+        text: "Rider lost SIM card and bank card, cannot receive salary, and needs replacement checklist before tomorrow morning shift.",
+        location: "Singapore",
+        channel: "Email",
+        language: "English",
+        mode: "Mutual aid lead"
+      },
+      {
+        id: "DO-206",
+        title: "Permit copy missing",
+        owner: "Document navigator",
+        text: "Worker lost work permit copy, employer is angry, and he needs to know which documents to bring to replace it.",
+        location: "Singapore",
+        channel: "WhatsApp",
+        language: "Hindi",
+        mode: "NGO worker"
+      },
+      {
+        id: "DO-207",
+        title: "Birth certificate help",
+        owner: "Family service connector",
+        text: "Parent needs birth certificate replacement for child school paperwork and does not know which service counter to contact.",
+        location: "Singapore",
+        channel: "Walk-in desk",
+        language: "Malay",
+        mode: "Community volunteer"
+      }
+    ],
+    constraints: [
+      "Moderate document cases need service sequencing without blocking critical care cases.",
+      "Volunteers need a checklist that can be copied without over-collecting personal details.",
+      "Queue discipline matters because urgency is uneven."
+    ],
+    counterMoves: [
+      "Batch document cases under one navigator after critical cases are owned.",
+      "Keep document numbers out of shared notes until consent and channel safety are confirmed.",
+      "Use a same-day checklist instead of escalating every case."
+    ],
+    judgeAngle: "Proves AidBridge handles boring operational load, not only dramatic emergencies."
   }
 ];
 
@@ -842,6 +1057,107 @@ export function buildOpsDesk(cases = OPS_DESK_CASES, resourceDirectory = DEFAULT
   };
 }
 
+function findSurgeScenario(scenarioId) {
+  return SURGE_SCENARIOS.find((scenario) => scenario.id === scenarioId) || SURGE_SCENARIOS[0];
+}
+
+export function buildSurgeLab(
+  scenarioId = SURGE_SCENARIOS[0].id,
+  cases = OPS_DESK_CASES,
+  resourceDirectory = DEFAULT_RESOURCE_DIRECTORY
+) {
+  const scenario = findSurgeScenario(scenarioId);
+  const baseOps = buildOpsDesk(cases, resourceDirectory);
+  const surgeCases = [...cases, ...scenario.addedCases];
+  const surgeOps = buildOpsDesk(surgeCases, resourceDirectory);
+  const topPressure = surgeOps.resourceLoad[0] || {
+    name: "Manual review",
+    pressure: 0,
+    band: "Balanced"
+  };
+  const urgentWindowCases = surgeOps.queue.filter((row) => row.responseWindow === "20 min").length;
+  const criticalDelta = surgeOps.metrics.criticalCases - baseOps.metrics.criticalCases;
+  const minutesSavedDelta = surgeOps.metrics.minutesSaved - baseOps.metrics.minutesSaved;
+  const surgeRisk = Math.min(100, Math.round(
+    topPressure.pressure * 0.52 +
+    surgeOps.metrics.criticalCases * 8 +
+    urgentWindowCases * 3
+  ));
+  const slaRisk = surgeRisk >= 92
+    ? "Red surge"
+    : surgeRisk >= 76
+      ? "High watch"
+      : surgeRisk >= 58
+        ? "Ready watch"
+        : "Controlled";
+  const nextOwners = surgeOps.queue.slice(0, Math.min(3, surgeOps.queue.length)).map((row) => row.id).join(", ");
+  const firstMoves = [
+    `Name owners for ${nextOwners} before lower-risk follow-up.`,
+    `Route pressure is hottest at ${topPressure.name} (${topPressure.pressure}/100, ${topPressure.band}).`,
+    ...scenario.counterMoves,
+    ...surgeOps.bottlenecks.slice(0, 2)
+  ].slice(0, 7);
+  const brief = [
+    "AIDBRIDGE SURGE LAB",
+    `Scenario: ${scenario.label}`,
+    "",
+    "WHY THIS MATTERS",
+    scenario.thesis,
+    "",
+    "SURGE METRICS",
+    `Base open cases: ${baseOps.metrics.openCases}`,
+    `Surge open cases: ${surgeOps.metrics.openCases} (+${scenario.addedCases.length})`,
+    `Critical cases: ${surgeOps.metrics.criticalCases} (${criticalDelta >= 0 ? "+" : ""}${criticalDelta})`,
+    `20-min response cases: ${urgentWindowCases}`,
+    `Estimated extra minutes saved: ${minutesSavedDelta}`,
+    `Top pressure: ${topPressure.name} at ${topPressure.pressure}/100 (${topPressure.band})`,
+    `SLA risk: ${slaRisk}`,
+    "",
+    "CONSTRAINTS",
+    ...scenario.constraints.map((item) => `- ${item}`),
+    "",
+    "FIRST MOVES",
+    ...firstMoves.map((item, index) => `${index + 1}. ${item}`),
+    "",
+    "JUDGE ANGLE",
+    scenario.judgeAngle,
+    "",
+    "QUEUE PREVIEW",
+    ...surgeOps.queue.slice(0, 5).map((row, index) => `${index + 1}. ${row.id} ${row.title} - ${row.band}, ${row.responseWindow}, ${row.topResource}`)
+  ].join("\n");
+
+  return {
+    generatedAt: new Date().toISOString(),
+    scenario: {
+      id: scenario.id,
+      label: scenario.label,
+      thesis: scenario.thesis,
+      constraints: scenario.constraints,
+      judgeAngle: scenario.judgeAngle
+    },
+    base: baseOps.metrics,
+    surge: surgeOps.metrics,
+    metrics: {
+      casesAdded: scenario.addedCases.length,
+      totalCases: surgeOps.metrics.openCases,
+      criticalCases: surgeOps.metrics.criticalCases,
+      criticalDelta,
+      minutesSavedDelta,
+      urgentWindowCases,
+      topPressureRoute: topPressure.name,
+      topPressure: topPressure.pressure,
+      topPressureBand: topPressure.band,
+      slaRisk,
+      surgeRisk
+    },
+    firstMoves,
+    queuePreview: surgeOps.queue.slice(0, 5),
+    resourceLoadPreview: surgeOps.resourceLoad.slice(0, 4),
+    brief,
+    ops: surgeOps
+  };
+}
+
 export function buildFlowMap(pack) {
   const leadNeed = pack.needs[0]?.label || "Clarify";
   const topResource = pack.resources[0]?.name || "Manual review";
@@ -1119,7 +1435,7 @@ export function buildIdeaConstellation(input = {}, pack) {
       module: "./api/codex-bridge.mjs",
       eventInput: "aidbridge:codex-idea",
       eventOutput: "aidbridge:hub-built",
-      methods: ["buildIdeaConstellation", "buildFromIdea", "getCurrentHub", "setIdeaText", "importCodexContext"]
+      methods: ["buildIdeaConstellation", "buildFromIdea", "buildSurgeLab", "getCurrentHub", "setIdeaText", "importCodexContext"]
     }
   };
 }
@@ -1176,6 +1492,7 @@ let activeResourceDirectory = DEFAULT_RESOURCE_DIRECTORY;
 let flowTourTimer;
 let currentHub;
 let currentOpsDesk;
+let currentSurgeLab;
 let hubCanvasFrame;
 let hubCanvasPhase = 0;
 let selectedHubNodeId = "core";
@@ -1474,6 +1791,77 @@ function renderOpsDesk(ops) {
     detail.textContent = `${resource.cases} case(s), ${resource.criticalCases} critical; ${resource.type}.`;
     item.append(head, bar, detail);
     return item;
+  }));
+}
+
+function renderSurgeOptions() {
+  byId("surgeScenarioInput").replaceChildren(...SURGE_SCENARIOS.map((scenario) => {
+    const option = document.createElement("option");
+    option.value = scenario.id;
+    option.textContent = scenario.label;
+    return option;
+  }));
+}
+
+function renderSurgeLab(lab) {
+  currentSurgeLab = lab;
+  byId("surgeTotalCases").textContent = `${lab.metrics.totalCases}`;
+  byId("surgeCriticalCases").textContent = `${lab.metrics.criticalCases} (${lab.metrics.criticalDelta >= 0 ? "+" : ""}${lab.metrics.criticalDelta})`;
+  byId("surgeTopPressure").textContent = `${lab.metrics.topPressure}/100`;
+  byId("surgeSlaRisk").textContent = lab.metrics.slaRisk;
+  byId("surgeBrief").textContent = lab.brief;
+
+  byId("surgeMoves").replaceChildren(...lab.firstMoves.map((move) => {
+    const li = document.createElement("li");
+    li.textContent = move;
+    return li;
+  }));
+
+  byId("surgeResourcePreview").replaceChildren(...lab.resourceLoadPreview.map((resource) => {
+    const div = document.createElement("div");
+    const strong = document.createElement("strong");
+    strong.textContent = `${resource.name} - ${resource.pressure}/100`;
+    const span = document.createElement("span");
+    span.textContent = `${resource.band}; ${resource.cases} case(s), ${resource.criticalCases} critical.`;
+    div.append(strong, span);
+    return div;
+  }));
+}
+
+function renderBackendStatus(message = "") {
+  const config = getStoredSupabaseConfig();
+  const configured = isSupabaseConfigured(config);
+  byId("backendStatus").textContent = configured ? "Supabase ready" : "Local only";
+  byId("backendStatus").classList.toggle("is-ready", configured);
+  byId("supabaseUrlInput").value = config.url || "";
+  byId("supabaseAnonKeyInput").value = config.anonKey || "";
+  byId("backendMessage").textContent = message || (configured
+    ? "Backend configured. Sync action packs or Ops Desk snapshots when ready."
+    : "Paste a Supabase project URL and anon public key to enable cloud sync.");
+}
+
+function renderBackendRecent(records) {
+  const items = [];
+  (records?.packs || []).forEach((row) => {
+    items.push({
+      title: `Action pack ${row.case_ref || row.id}`,
+      detail: `${row.risk_band} ${row.urgency}/100; ${row.location}; ${row.channel}; ${new Date(row.created_at).toLocaleString()}`
+    });
+  });
+  (records?.ops || []).forEach((row) => {
+    items.push({
+      title: `Ops snapshot ${row.next_case_id || row.id}`,
+      detail: `${row.open_cases} open, ${row.critical_cases} critical, ${row.minutes_saved} min saved, pressure ${row.resource_pressure}; ${new Date(row.created_at).toLocaleString()}`
+    });
+  });
+  byId("backendRecent").replaceChildren(...items.map((item) => {
+    const div = document.createElement("div");
+    const strong = document.createElement("strong");
+    strong.textContent = item.title;
+    const span = document.createElement("span");
+    span.textContent = item.detail;
+    div.append(strong, span);
+    return div;
   }));
 }
 
@@ -1791,6 +2179,80 @@ if (typeof document !== "undefined") {
     showToast("Ops brief copied");
   });
 
+  byId("runSurgeBtn").addEventListener("click", () => {
+    const lab = buildSurgeLab(byId("surgeScenarioInput").value, OPS_DESK_CASES, activeResourceDirectory);
+    renderSurgeLab(lab);
+    showToast("Surge lab updated");
+  });
+
+  byId("surgeScenarioInput").addEventListener("change", () => {
+    const lab = buildSurgeLab(byId("surgeScenarioInput").value, OPS_DESK_CASES, activeResourceDirectory);
+    renderSurgeLab(lab);
+  });
+
+  byId("copySurgeBriefBtn").addEventListener("click", async () => {
+    currentSurgeLab = currentSurgeLab || buildSurgeLab(byId("surgeScenarioInput").value, OPS_DESK_CASES, activeResourceDirectory);
+    await navigator.clipboard.writeText(currentSurgeLab.brief);
+    showToast("Surge brief copied");
+  });
+
+  byId("saveBackendBtn").addEventListener("click", () => {
+    try {
+      saveSupabaseConfig({
+        url: byId("supabaseUrlInput").value,
+        anonKey: byId("supabaseAnonKeyInput").value
+      });
+      renderBackendStatus("Supabase backend saved in this browser.");
+      showToast("Backend saved");
+    } catch (error) {
+      renderBackendStatus(error.message || "Backend not saved");
+      showToast("Backend not saved");
+    }
+  });
+
+  byId("clearBackendBtn").addEventListener("click", () => {
+    clearSupabaseConfig();
+    byId("backendRecent").replaceChildren();
+    renderBackendStatus("Supabase backend cleared from this browser.");
+    showToast("Backend cleared");
+  });
+
+  byId("syncPackBtn").addEventListener("click", async () => {
+    try {
+      currentPack = currentPack || buildActionPack(getInput(), activeResourceDirectory);
+      const row = await syncActionPackToSupabase(currentPack);
+      renderBackendStatus(`Action pack synced to Supabase: ${row.id || row.case_ref}.`);
+      showToast("Pack synced");
+    } catch (error) {
+      renderBackendStatus(error.message || "Pack sync failed");
+      showToast("Pack sync failed");
+    }
+  });
+
+  byId("syncOpsBtn").addEventListener("click", async () => {
+    try {
+      currentOpsDesk = currentOpsDesk || buildOpsDesk(OPS_DESK_CASES, activeResourceDirectory);
+      const row = await syncOpsDeskToSupabase(currentOpsDesk);
+      renderBackendStatus(`Ops Desk synced to Supabase: ${row.id || row.next_case_id}.`);
+      showToast("Ops synced");
+    } catch (error) {
+      renderBackendStatus(error.message || "Ops sync failed");
+      showToast("Ops sync failed");
+    }
+  });
+
+  byId("loadRecentBackendBtn").addEventListener("click", async () => {
+    try {
+      const records = await fetchRecentSupabaseRecords();
+      renderBackendRecent(records);
+      renderBackendStatus(`Loaded ${(records.packs?.length || 0) + (records.ops?.length || 0)} recent Supabase row(s).`);
+      showToast("Recent loaded");
+    } catch (error) {
+      renderBackendStatus(error.message || "Recent load failed");
+      showToast("Recent load failed");
+    }
+  });
+
   byId("flowPlayBtn").addEventListener("click", () => {
     if (flowTourTimer) {
       stopFlowTour();
@@ -1862,6 +2324,7 @@ if (typeof document !== "undefined") {
       currentPack = buildActionPack(getInput(), activeResourceDirectory);
       renderPack(currentPack);
       renderOpsDesk(buildOpsDesk(OPS_DESK_CASES, activeResourceDirectory));
+      renderSurgeLab(buildSurgeLab(byId("surgeScenarioInput").value, OPS_DESK_CASES, activeResourceDirectory));
       showToast("Directory applied");
     } catch (error) {
       byId("directoryStatus").textContent = error.message || "Invalid CSV";
@@ -1875,12 +2338,16 @@ if (typeof document !== "undefined") {
     currentPack = buildActionPack(getInput(), activeResourceDirectory);
     renderPack(currentPack);
     renderOpsDesk(buildOpsDesk(OPS_DESK_CASES, activeResourceDirectory));
+    renderSurgeLab(buildSurgeLab(byId("surgeScenarioInput").value, OPS_DESK_CASES, activeResourceDirectory));
     showToast("Directory reset");
   });
 
   renderDirectory(activeResourceDirectory, true);
   currentPack = loadSample(0);
   renderOpsDesk(buildOpsDesk(OPS_DESK_CASES, activeResourceDirectory));
+  renderSurgeOptions();
+  renderSurgeLab(buildSurgeLab(byId("surgeScenarioInput").value, OPS_DESK_CASES, activeResourceDirectory));
+  renderBackendStatus();
   byId("hubIdeaInput").value = hubSeedFromPack(currentPack);
   renderHub(buildIdeaConstellation({ ideaText: byId("hubIdeaInput").value }, currentPack));
   window.addEventListener("resize", drawHubCanvas);
@@ -1902,8 +2369,13 @@ if (typeof document !== "undefined") {
     buildActionPack,
     buildIdeaConstellation,
     buildOpsDesk,
+    buildSurgeLab,
+    syncActionPackToSupabase,
+    syncOpsDeskToSupabase,
+    getStoredSupabaseConfig,
     getCurrentHub: () => currentHub,
     getCurrentOpsDesk: () => currentOpsDesk,
+    getCurrentSurgeLab: () => currentSurgeLab,
     setIdeaText: (ideaText) => {
       byId("hubIdeaInput").value = String(ideaText || "");
       return byId("hubIdeaInput").value;

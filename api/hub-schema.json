@@ -17,6 +17,34 @@
       },
       "output": "Operations payload with metrics, priority queue, resource load, bottlenecks, and copy-ready ops brief."
     },
+    "buildSurgeLab": {
+      "input": {
+        "scenarioId": "worker-dorm-night | school-exam-week | family-rent-shock | documents-outage",
+        "cases": "optional base case array",
+        "resourceDirectory": "optional trusted resource directory"
+      },
+      "output": "Singapore surge-stress payload with base vs surge metrics, SLA risk, first moves, pressure preview, and copy-ready surge brief."
+    },
+    "syncActionPackToSupabase": {
+      "input": {
+        "pack": "AidBridge action pack",
+        "config": {
+          "url": "Supabase project URL",
+          "anonKey": "Supabase anon public key"
+        }
+      },
+      "output": "Inserted Supabase action-pack row."
+    },
+    "syncOpsDeskToSupabase": {
+      "input": {
+        "ops": "AidBridge Ops Desk payload",
+        "config": {
+          "url": "Supabase project URL",
+          "anonKey": "Supabase anon public key"
+        }
+      },
+      "output": "Inserted Supabase Ops Desk row."
+    },
     "buildIdeaConstellation": {
       "input": {
         "ideaText": "string"

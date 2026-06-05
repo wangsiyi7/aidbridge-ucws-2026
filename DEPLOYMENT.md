@@ -28,6 +28,19 @@ The `.nojekyll` file is included so GitHub Pages serves static assets directly.
 
 `vercel.json` is included for clean URLs and basic security headers.
 
+## Optional Supabase Backend
+
+AidBridge can stay fully static while syncing action packs and Ops Desk snapshots to Supabase.
+
+1. Create a Supabase project.
+2. Run `supabase/schema.sql` in the Supabase SQL editor.
+3. Deploy AidBridge to GitHub Pages, Netlify, or Vercel.
+4. Open the deployed app and go to `Ops Desk`.
+5. Paste the Supabase project URL and anon public key.
+6. Click `Sync Pack`, `Sync Ops`, or `Load Recent`.
+
+Do not use a Supabase service-role key in the browser. For production, tighten the included demo RLS policies with authenticated users and team ownership.
+
 ## Local Smoke Test
 
 ```bash

@@ -8,6 +8,7 @@
   <a href="https://wangsiyi7.github.io/aidbridge-ucws-2026/?demo=1"><kbd>Live Demo</kbd></a>
   <a href="https://wangsiyi7.github.io/aidbridge-ucws-2026/?view=ops"><kbd>Ops Desk</kbd></a>
   <a href="https://wangsiyi7.github.io/aidbridge-ucws-2026/?view=hub"><kbd>Visual Hub</kbd></a>
+  <a href="./supabase/README.md"><kbd>Supabase Backend</kbd></a>
 </p>
 
 ## English
@@ -37,6 +38,8 @@ AidBridge creates a structured aid plan in seconds:
 - Detects urgent needs across medical, shelter, food, legal/work-rights, mental health, safeguarding, and document-access categories.
 - Scores risk and confidence with a deterministic triage engine.
 - Adds an Ops Desk that batch-triages multiple active cases, sorts the queue by urgency, watches resource pressure, rolls up minutes saved, and exports a duty-lead brief.
+- Adds a Singapore Surge Lab inside Ops Desk so judges can stress-test migrant-worker, school-care, family-aid, and document-access spikes, then copy the first-move surge brief.
+- Adds optional Supabase backend sync from Ops Desk, so action packs and multi-case operations snapshots can be persisted from the public browser demo with a project URL and anon key.
 - Visualizes every case as an interactive Crisis Map from intake signal to human handoff, with a Play Flow tour for demos.
 - Adds a Hackathon Constellation Hub inspired by code graph dashboards: paste any UCWS idea and it turns the concept into a visual star map of user signals, AI layers, data sources, safety guardrails, evaluation proof, and submission artifacts.
 - Guides Project Wall filling from the Hub by generating title, tagline, description, demo/repo proof, screenshot guidance, missing human fields, and next actions.
@@ -70,6 +73,25 @@ AidBridge is positioned as a Singapore-first community-aid operating layer:
 - Keep high-risk decisions human-owned, with privacy-safe exports, evidence notes, and escalation reminders.
 - Reuse the same schema for Southeast Asia expansion by swapping language packs, verified local directories, escalation rules, and partner handoff owners.
 
+## Supabase Backend
+
+AidBridge is still public and static-first, but Ops Desk now includes `Supabase Backend Sync`.
+
+What can be synced:
+
+- Current action pack: case metadata, urgency, confidence, detected needs, resources, redacted summary, evaluation JSON, impact, launch readiness, and flow map.
+- Ops Desk snapshot: open cases, critical cases, average urgency, minutes saved, resource pressure, priority queue, resource load, bottlenecks, and command brief.
+
+Setup:
+
+1. Create a Supabase project.
+2. Run [`supabase/schema.sql`](./supabase/schema.sql) in the SQL editor.
+3. Open the public demo and go to `Ops Desk`.
+4. Paste the Supabase project URL and anon public key.
+5. Click `Sync Pack`, `Sync Ops`, or `Load Recent`.
+
+Do not paste a service-role key into the browser. The included RLS policies are demo-friendly and should be tightened for production teams.
+
 ## Run Locally
 
 Use any static file server. With Node:
@@ -92,7 +114,7 @@ If your environment blocks the default `node` command, use the bundled Codex run
 npm test
 ```
 
-The test suite verifies need detection, risk scoring, privacy redaction, resource matching, CSV import/export, evidence output, Ops Desk queue generation, Crisis Map generation, Singapore Launch Lens readiness scoring, case-quality audit scoring, evaluation JSON, and field-pack formatting.
+The test suite verifies need detection, risk scoring, privacy redaction, resource matching, CSV import/export, evidence output, Ops Desk queue generation, Singapore Surge Lab stress scenarios, Crisis Map generation, Singapore Launch Lens readiness scoring, case-quality audit scoring, evaluation JSON, and field-pack formatting.
 
 Run the scenario benchmark:
 
@@ -149,12 +171,17 @@ aidbridge/
   assets/screenshot-mobile.png
   assets/screenshot-judge.png
   assets/screenshot-ops.png
+  assets/screenshot-surge.png
+  assets/screenshot-backend.png
   assets/screenshot-hub.png
   assets/screenshot-hub-mobile.png
   assets/evaluation-report.json
   assets/AidBridge_UCWS_Pitch.pptx
   api/codex-bridge.mjs       Static ES module API for Codex/agent handoff
   api/hub-schema.json        Constellation Hub payload contract
+  api/supabase-client.mjs    Supabase REST sync client
+  supabase/schema.sql        Tables and RLS policies for backend sync
+  supabase/README.md         Supabase setup notes
   tests/triage.test.mjs      Deterministic engine tests
   tools/serve.mjs            Tiny static server
   AI_NATIVE_ARCHITECTURE.md  LLM/RAG/DeepResearch upgrade path
@@ -225,8 +252,10 @@ AidBridge 采用 Singapore-first, SEA-ready 的定位：先服务新加坡社区
 - Singapore Launch Lens
 - Hackathon Constellation Hub
 - Ops Desk multi-case queue and resource-pressure view
+- Singapore Surge Lab stress simulator
 - Browser CustomEvent integration
 - Static Codex bridge API
+- Optional Supabase backend sync
 - Node.js tests and benchmark harness
 - GitHub Pages static deployment
 
