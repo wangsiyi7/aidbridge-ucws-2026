@@ -54,6 +54,7 @@ Most chatbot demos stop at a generated answer. AidBridge is built as an operatin
 - Human handoff script
 - Judge Lens quality audit
 - Impact Lens time-saving estimate
+- Singapore Launch Lens go-to-market readiness score
 - Copy-ready Field Pack
 - Machine-readable Evaluation JSON
 
@@ -110,6 +111,7 @@ Core workflow:
 - Human handoff script
 - Judge Lens audit for safety, privacy, evidence, resource fit, handoff clarity, and field readiness
 - Impact Lens for manual baseline time, AidBridge run time, minutes saved, privacy signals, and resource routes
+- Singapore Launch Lens for multilingual coverage, frontline channels, resource-directory portability, privacy-safe export, human handoff, proof package, and urgent-route readiness
 - Machine-readable Evaluation JSON
 - Hackathon Constellation Hub for idea-to-submission visualization
 - Guided Project Wall field builder
@@ -128,6 +130,7 @@ Core workflow:
 - Local CSV parser/importer
 - Case-quality audit engine
 - Impact/outcome estimation layer
+- Singapore Launch Lens readiness engine
 - Hackathon Constellation Hub renderer
 - Browser CustomEvent integration
 - Static Codex bridge API
@@ -307,4 +310,3 @@ Demo: https://wangsiyi7.github.io/aidbridge-ucws-2026/?demo=1
 Hub: https://wangsiyi7.github.io/aidbridge-ucws-2026/?view=hub
 
 GitHub: https://github.com/wangsiyi7/aidbridge-ucws-2026
-

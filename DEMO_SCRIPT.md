@@ -71,7 +71,7 @@ Open `Judge Lens`.
 
 Speaker line:
 
-The case-quality audit shows whether the output is safe, private, evidence-backed, resource-matched, and copy-ready. Impact Lens estimates operator minutes saved and privacy signals handled, while the JSON export makes the demo inspectable by automated and human reviewers.
+The case-quality audit shows whether the output is safe, private, evidence-backed, resource-matched, and copy-ready. Impact Lens estimates operator minutes saved and privacy signals handled. Singapore Launch Lens shows whether the workflow is ready for multilingual Singapore intake, local resource directories, privacy-safe export, and human-owned escalation, while the JSON export makes the demo inspectable by automated and human reviewers.
 
 ## 88-90 Seconds
 

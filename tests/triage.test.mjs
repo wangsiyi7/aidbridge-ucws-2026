@@ -4,6 +4,7 @@ import {
   buildActionPack,
   buildFlowMap,
   buildIdeaConstellation,
+  buildSingaporeLaunchPlan,
   detectNeeds,
   directoryToCsv,
   estimateImpact,
@@ -72,6 +73,9 @@ assert.ok(pack.audit.checks.some((check) => check.id === "privacy" && check.pass
 assert.ok(pack.evaluationJson.includes('"project": "AidBridge"'), "adds machine-readable evaluation JSON");
 assert.ok(pack.impact.minutesSaved > 0, "estimates operator time saved");
 assert.ok(pack.impact.resourceRoutes > 0, "counts resource routes");
+assert.ok(pack.launch.score >= 90, "scores Singapore launch readiness");
+assert.ok(pack.launch.checklist.some((item) => item.id === "language" && item.passed), "audits Singapore language coverage");
+assert.ok(pack.launch.launchMarkets.some((market) => market.label.includes("Singapore")), "adds Singapore wedge");
 assert.equal(pack.flow.nodes.length, 5, "creates five-step crisis map");
 assert.ok(pack.flow.pulse.some((item) => item.includes("Audit")), "summarizes audit in crisis map");
 assert.ok(pack.flow.nodes.every((node) => node.detail), "adds interactive flow details");
@@ -80,12 +84,15 @@ const audit = auditActionPack(pack);
 assert.equal(audit.score, pack.audit.score, "standalone audit matches pack audit");
 const impact = estimateImpact(pack);
 assert.equal(impact.minutesSaved, pack.impact.minutesSaved, "standalone impact matches pack impact");
+const launch = buildSingaporeLaunchPlan(pack);
+assert.equal(launch.score, pack.launch.score, "standalone Singapore launch plan matches pack launch plan");
 const flow = buildFlowMap(pack);
 assert.equal(flow.nodes[0].id, "intake", "standalone flow starts at intake");
 const evaluation = JSON.parse(formatEvaluationJson(pack));
 assert.equal(evaluation.audit.band, pack.audit.band, "evaluation JSON includes audit band");
 assert.equal(evaluation.detectedNeeds.length, pack.needs.length, "evaluation JSON includes detected needs");
 assert.equal(evaluation.impact.minutesSaved, pack.impact.minutesSaved, "evaluation JSON includes impact estimate");
+assert.equal(evaluation.singaporeLaunch.score, pack.launch.score, "evaluation JSON includes Singapore launch lens");
 assert.equal(evaluation.flow.nodes.length, pack.flow.nodes.length, "evaluation JSON includes crisis map");
 assert.ok(evaluation.flow.nodes[0].detail.includes("Incoming"), "evaluation JSON includes flow detail");
 

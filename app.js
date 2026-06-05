@@ -484,6 +484,7 @@ export function buildActionPack(input, resourceDirectory = DEFAULT_RESOURCE_DIRE
   };
   pack.audit = auditActionPack(pack);
   pack.impact = estimateImpact(pack);
+  pack.launch = buildSingaporeLaunchPlan(pack);
   pack.flow = buildFlowMap(pack);
   pack.evaluationJson = formatEvaluationJson(pack);
   return pack;
@@ -579,6 +580,93 @@ export function estimateImpact(pack) {
     followupCheckpoints: pack.followup.length,
     handoffCompleteness,
     summary: `${minutesSaved} estimated operator minutes saved; ${pack.resources.length} matched route(s); ${pack.followup.length} follow-up checkpoint(s); ${privacySignalsRedacted} sensitive signal(s) prepared for redaction.`
+  };
+}
+
+export function buildSingaporeLaunchPlan(pack) {
+  const supportedLanguages = new Set(DEFAULT_RESOURCE_DIRECTORY.flatMap((resource) => resource.languages));
+  const localLanguages = ["English", "Mandarin", "Malay", "Tamil"];
+  const expansionLanguages = ["Hindi", "Bengali", "Mixed"];
+  const languageCoverage = localLanguages.filter((language) => supportedLanguages.has(language)).length;
+  const expansionCoverage = expansionLanguages.filter((language) => supportedLanguages.has(language) || pack.input.language === language).length;
+  const channel = pack.input.channel || "WhatsApp";
+  const resourceTypes = new Set(pack.resources.map((resource) => resource.type));
+  const hasUrgentRoute = pack.resources.some((resource) => /immediate|same-day|night|weekend/i.test(resource.availability));
+  const checklist = [
+    {
+      id: "language",
+      label: "Singapore multilingual coverage",
+      weight: 18,
+      passed: languageCoverage >= 4,
+      detail: `${languageCoverage}/4 Singapore operating languages covered, with ${expansionCoverage} additional migrant/region language signal(s).`
+    },
+    {
+      id: "channel",
+      label: "WhatsApp and frontline intake fit",
+      weight: 14,
+      passed: /whatsapp|hotline|walk-in desk|email/i.test(channel),
+      detail: `Current intake channel is ${channel}; the flow supports WhatsApp, hotline, walk-in, and email-style requests.`
+    },
+    {
+      id: "directory",
+      label: "Local resource-directory portability",
+      weight: 16,
+      passed: pack.resources.length > 0 && resourceTypes.size > 0,
+      detail: `${pack.resources.length} trusted route(s) matched; teams can replace the demo directory with their own CSV.`
+    },
+    {
+      id: "privacy",
+      label: "Privacy-safe export posture",
+      weight: 16,
+      passed: pack.audit.checks.some((check) => check.id === "privacy" && check.passed),
+      detail: "Redacted brief and Field Pack avoid direct phone, email, document, and sensitive location leakage."
+    },
+    {
+      id: "handoff",
+      label: "Human-in-the-loop operating model",
+      weight: 14,
+      passed: pack.audit.checks.some((check) => check.id === "handoff" && check.passed),
+      detail: "The workflow keeps a trained human responsible for consent, escalation, follow-up, and closure."
+    },
+    {
+      id: "proof",
+      label: "Judge and buyer proof package",
+      weight: 12,
+      passed: pack.audit.score >= 90 && pack.impact.minutesSaved > 0,
+      detail: `${pack.audit.score}/100 case audit and ${pack.impact.minutesSaved} estimated operator minutes saved.`
+    },
+    {
+      id: "timing",
+      label: "Urgent-response route readiness",
+      weight: 10,
+      passed: hasUrgentRoute,
+      detail: hasUrgentRoute
+        ? "At least one matched route supports urgent or same-day response."
+        : "Add a verified urgent-response resource before production rollout."
+    }
+  ];
+  const score = checklist.reduce((sum, item) => sum + (item.passed ? item.weight : 0), 0);
+  const launchMarkets = [
+    {
+      label: "Singapore wedge",
+      detail: "Start with NGOs, school care teams, mutual-aid desks, and migrant-worker support workflows."
+    },
+    {
+      label: "SEA expansion path",
+      detail: "Reuse the same schema with localized directories, languages, escalation rules, and partner handoff owners."
+    },
+    {
+      label: "Enterprise/CSR fit",
+      detail: "Position as a responsible intake layer for community programs, volunteer ops, and impact reporting."
+    }
+  ];
+  return {
+    score,
+    band: score >= 90 ? "Singapore-ready" : score >= 75 ? "Launch pilot-ready" : "Needs local partner review",
+    supportedLanguages: [...supportedLanguages].sort(),
+    checklist,
+    launchMarkets,
+    summary: `${score}/100 Singapore launch readiness: multilingual intake, CSV resource portability, privacy-safe export, human handoff, and judge/buyer proof are bundled into one browser demo.`
   };
 }
 
@@ -895,6 +983,7 @@ export function formatEvaluationJson(pack) {
     followup: pack.followup,
     handoff: pack.handoff,
     impact: pack.impact,
+    singaporeLaunch: pack.launch,
     flow: pack.flow,
     audit: {
       score: pack.audit.score,
@@ -1039,6 +1128,9 @@ function renderPack(pack) {
   byId("impactRedacted").textContent = `${pack.impact.privacySignalsRedacted}`;
   byId("impactRoutes").textContent = `${pack.impact.resourceRoutes}`;
   byId("impactSummary").textContent = pack.impact.summary;
+  byId("launchScore").textContent = `${pack.launch.score}`;
+  byId("launchBand").textContent = pack.launch.band;
+  byId("launchSummary").textContent = pack.launch.summary;
   byId("flowTitle").textContent = pack.flow.title;
   stopFlowTour();
   byId("flowPulse").replaceChildren(...pack.flow.pulse.map((item) => {
@@ -1083,6 +1175,27 @@ function renderPack(pack) {
     strong.textContent = check.label;
     const span = document.createElement("span");
     span.textContent = check.detail;
+    li.append(strong, span);
+    return li;
+  }));
+
+  byId("launchMarkets").replaceChildren(...pack.launch.launchMarkets.map((market) => {
+    const div = document.createElement("div");
+    const strong = document.createElement("strong");
+    strong.textContent = market.label;
+    const span = document.createElement("span");
+    span.textContent = market.detail;
+    div.append(strong, span);
+    return div;
+  }));
+
+  byId("launchChecklist").replaceChildren(...pack.launch.checklist.map((item) => {
+    const li = document.createElement("li");
+    li.className = item.passed ? "is-pass" : "is-review";
+    const strong = document.createElement("strong");
+    strong.textContent = item.label;
+    const span = document.createElement("span");
+    span.textContent = item.detail;
     li.append(strong, span);
     return li;
   }));

@@ -1194,6 +1194,114 @@ select {
   line-height: 1.5;
 }
 
+.launch-panel {
+  display: grid;
+  gap: 14px;
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid rgba(4, 124, 115, 0.2);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(135deg, rgba(4, 124, 115, 0.08), rgba(49, 95, 186, 0.06)),
+    #ffffff;
+}
+
+.launch-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: start;
+}
+
+.launch-head h3 {
+  margin: 4px 0 0;
+  font-size: 19px;
+}
+
+.launch-score {
+  min-width: 170px;
+  padding: 12px;
+  border-radius: var(--radius);
+  background: #18202f;
+  color: white;
+  text-align: right;
+}
+
+.launch-score strong {
+  display: block;
+  color: #62f5d0;
+  font-size: 32px;
+  line-height: 1;
+}
+
+.launch-score span {
+  display: block;
+  margin-top: 5px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 12px;
+  font-weight: 760;
+}
+
+.launch-summary {
+  margin: 0;
+  color: #334155;
+  line-height: 1.5;
+}
+
+.launch-markets,
+.launch-checklist {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.launch-markets div,
+.launch-checklist li {
+  min-width: 0;
+  padding: 11px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.launch-markets strong,
+.launch-markets span,
+.launch-checklist strong,
+.launch-checklist span {
+  display: block;
+}
+
+.launch-markets strong,
+.launch-checklist strong {
+  font-size: 13px;
+}
+
+.launch-markets span,
+.launch-checklist span {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.launch-checklist {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.launch-checklist li {
+  border-left-width: 4px;
+}
+
+.launch-checklist li.is-pass {
+  border-left-color: var(--teal);
+}
+
+.launch-checklist li.is-review {
+  border-left-color: var(--gold);
+}
+
 .review-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -1300,7 +1408,9 @@ select {
   .audit-list,
   .impact-grid,
   .flow-nodes,
-  .review-grid {
+  .review-grid,
+  .launch-markets,
+  .launch-checklist {
     grid-template-columns: 1fr;
   }
 
@@ -1367,11 +1477,20 @@ select {
     display: grid;
   }
 
+  .launch-head {
+    display: grid;
+  }
+
   .audit-export-head {
     display: grid;
   }
 
   .audit-score {
+    min-width: 0;
+    text-align: left;
+  }
+
+  .launch-score {
     min-width: 0;
     text-align: left;
   }

@@ -54,6 +54,7 @@ AidBridge 解决的是社区救援中的真实高压问题：一线帮助者经�
 - 人工交接脚本
 - Judge Lens 质量审计
 - Impact Lens 时间节省估算
+- Singapore Launch Lens 新加坡出海 readiness 评分
 - 可复制的一页 Field Pack
 - 机器可读 Evaluation JSON
 
@@ -110,6 +111,7 @@ AidBridge 将混乱输入转化为结构化救援行动包，并用可视化和�
 - Human handoff script：生成给真人负责人的交接脚本
 - Judge Lens：审计安全、隐私、证据、资源匹配、交接清晰度和现场可用性
 - Impact Lens：估算人工基线时间、AidBridge 运行时间、节省分钟数和隐私信号处理
+- Singapore Launch Lens：评估多语言覆盖、一线渠道、本地资源目录、隐私导出、人工交接、证据包和紧急路由 readiness
 - Evaluation JSON：输出机器可读评估包
 - Hackathon Constellation Hub：把黑客松想法自动构建为星空节点图
 - Guided Project Wall builder：从 Hub 自动生成提交字段引导
@@ -128,6 +130,7 @@ AidBridge 将混乱输入转化为结构化救援行动包，并用可视化和�
 - Local CSV parser/importer
 - Case-quality audit engine
 - Impact/outcome estimation layer
+- Singapore Launch Lens readiness engine
 - Hackathon Constellation Hub renderer
 - Browser CustomEvent integration
 - Static Codex bridge API
@@ -307,4 +310,3 @@ Demo: https://wangsiyi7.github.io/aidbridge-ucws-2026/?demo=1
 Hub: https://wangsiyi7.github.io/aidbridge-ucws-2026/?view=hub
 
 GitHub: https://github.com/wangsiyi7/aidbridge-ucws-2026
-
